@@ -9,10 +9,19 @@ module.
 Use your OS's package manager to install (Vagrant, VirtualBox, and RDP). The following examples
 are based on Mac OSX. *NOTE: If you can't install VirtualBox, then install VMware Fusion.
 
+VirtualBox Setup:
 ```bash
 brew install vagrant
-brew install --cask <virtualbox|vmware-fusion>  # (OPTIONAL) M1 Apple chips don't support vbox, use fusion
+brew install --cask virtualbox
 brew install --cask microsoft-remote-desktop
+```
+
+VMware Fusion Setup:
+```bash
+brew install vagrant
+brew install --cask vmware-fusion
+brew install --cask microsoft-remote-desktop
+vagrant plugin install vagrant-vmware-desktop
 ```
 
 Tool Refs:
