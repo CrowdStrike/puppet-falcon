@@ -1,15 +1,8 @@
 {
-	"name": "Puppet Development Kit (Community)",
+	"name": "Puppet Agent, PDK, Bolt",
 	"dockerFile": "Dockerfile",
-
-	"settings": {
-		"terminal.integrated.profiles.linux": {
-			"bash": {
-				"path": "bash",
-			}
-		}
-	},
-
+	"settings": {},
+	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"puppet.puppet-vscode",
 		"rebornix.Ruby"
