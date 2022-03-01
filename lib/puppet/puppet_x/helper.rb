@@ -11,7 +11,7 @@ def build_sensor_installer_query(platform_name:, os_name: nil, version: nil)
   end
 
   unless os_name.nil?
-    query += "+os:'#{os_name.capitalize}'"
+    query += "+os:'#{os_name}'"
   end
 
   query
