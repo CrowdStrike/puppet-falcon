@@ -80,7 +80,13 @@ class FalconApi
 
     case resp
     when Net::HTTPSuccess, Net::HTTPRedirection then
-      JSON.parse(resp.read_body)['resources']
+      body = JSON.parse(resp.read_body)
+
+      if body['resources'].nil? || body['resources'].empty?
+        raise ArgumentError, "no installers found for query: '#{query}'"
+      end
+
+      body['resources']
     else
       puts resp.code
       puts resp.header
