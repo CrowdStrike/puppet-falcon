@@ -3,7 +3,7 @@ require 'net/http'
 require 'json'
 require 'cgi'
 
-def build_sensor_installer_query(platform_name, os_name = nil, version = nil)
+def build_sensor_installer_query(platform_name:, os_name: nil, version: nil)
   query = "platform:'#{platform_name.downcase}'"
 
   unless version.nil?
