@@ -36,17 +36,13 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
     os_name = platform_name.casecmp('mac').zero? ? 'macOS' : scope['facts']['os']['name']
 
     falcon_api = FalconApi.new(falcon_cloud: options['falcon_cloud'], client_id: client_id, client_secret: client_secret)
-
     falcon_api.policy_name = options['update_policy']
     falcon_api.platform_name = platform_name
 
     version = falcon_api.version_from_policy_name
-    query = build_sensor_installer_query(platform_name, os_name, version)
-
+    query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name)
     installers = falcon_api.falcon_installers(query)
-
     file_path = File.join(options['sensor_tmp_dir'], installers[0]['name'])
-
     falcon_api.download_installer(installers[0]['sha256'], file_path)
 
     {
