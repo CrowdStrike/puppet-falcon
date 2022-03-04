@@ -8,25 +8,24 @@ https://github.com/microsoft/vscode-dev-containers/tree/v0.140.1/containers/pupp
  
 ``` json
 {
-	"name": "Puppet Development Kit (Community)",
+	"name": "Puppet Agent, PDK, Bolt",
 	"dockerFile": "Dockerfile",
-
-	// Set *default* container specific settings.json values on container create.
-	"settings": {
-		"terminal.integrated.shell.linux": "/bin/bash"
-	},
-
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"puppet.puppet-vscode",
-		"rebornix.Ruby"
-	]
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [],
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pdk --version",
+		"misogi.ruby-rubocop",
+		"castwide.solargraph"
+	],
+	"settings": {
+		"[ruby]": {
+			"editor.defaultFormatter": "misogi.ruby-rubocop"
+		},
+		"ruby.rubocop.suppressRubocopWarnings": true,
+	},
+	"mounts": [
+		"source=${localWorkspaceFolder},target=/etc/puppetlabs/code/environments/production/modules/falcon,type=bind,consistency=cached",
+	],
+	"postStartCommand": "bundle install"
 }
 ```
 
