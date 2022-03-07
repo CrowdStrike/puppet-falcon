@@ -56,7 +56,7 @@ class falcon::install (
     name         => $info['file_path'],
     sha256       => $info['sha256'],
     bearer_token => $info['bearer_token'],
-    falcon_cloud => 'api.crowdstrike.com',
+    falcon_cloud => $falcon_cloud,
   }
 
   package { 'falcon-sensor':
