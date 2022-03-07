@@ -31,24 +31,47 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
 
   def sensor_download_info(client_id, client_secret, options)
     scope = closure_scope
-
     platform_name = platform(scope)
     os_name = platform_name.casecmp('mac').zero? ? 'macOS' : scope['facts']['os']['name']
 
     falcon_api = FalconApi.new(falcon_cloud: options['falcon_cloud'], client_id: client_id, client_secret: client_secret)
-    falcon_api.policy_name = options['update_policy']
     falcon_api.platform_name = platform_name
 
-    version = falcon_api.version_from_policy_name
-    query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name)
-    installers = falcon_api.falcon_installers(query)
-    file_path = File.join(options['sensor_tmp_dir'], installers[0]['name'])
-    falcon_api.download_installer(installers[0]['sha256'], file_path)
+    # If version is provied, use it to get the sensor package info
+    if options.key?('version') && !options['version'].nil?
+      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name)
+      installer = falcon_api.falcon_installers(query)[0]
+    # If update_policy is provided, use it to get the sensor package info
+    elsif options.key?('update_policy') && !options['update_policy'].nil?
+      falcon_api.update_policy = options['update_policy']
+      version = falcon_api.version_from_update_policy
+      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name)
+      installer = falcon_api.falcon_installers(query)[0]
+    # If neither are provided, use the `version_decrement` to pull the n-x version for the platform and os`
+    else
+      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name)
+      version_decrement = options['version_decrement']
+      installers = falcon_api.falcon_installers(query)
+
+      if version_decrement >= installers.length
+        raise Puppet::Error, "The version_decrement is greater than the number of versions available for Platform: #{platform_name} and OS: #{os_name}"
+      end
+
+      installer = installers[version_decrement]
+      version = installer['version']
+    end
+
+    file_path = File.join(options['sensor_tmp_dir'], installer['name'])
+
+    # CrowdStrike API returns versions like 6.25.1302, but on linux once we install the package version is
+    # 6.25.0-1302 so the below regex is used to make this change.
+    # TODO: Check if macos and windows package version needs the same fix
+    version = version.gsub(%r{\.(\d+)\.(\d+)}, '.\1.0-\2')
 
     {
       'bearer_token' => falcon_api.bearer_token,
       'version' => version,
-      'sha256' => installers[0]['sha256'],
+      'sha256' => installer['sha256'],
       'file_path' => file_path,
       'platform_name' => platform_name,
       'os_name' => os_name

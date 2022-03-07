@@ -7,7 +7,7 @@ require 'cgi'
 class FalconApi
   attr_accessor :falcon_cloud
   attr_accessor :bearer_token
-  attr_accessor :policy_name
+  attr_accessor :update_policy
   attr_accessor :platform_name
   attr_accessor :version
 
@@ -33,14 +33,13 @@ class FalconApi
   end
 
   # Returns the version of the sensor installer for the given policy and platform name.
-  # - policy_name - the name of the policy to get the version for.
+  # - update_policy - the name of the policy to get the version for.
   # - platform_name - the name of the platform to get the version for.
-  def version_from_policy_name(policy_name = @policy_name, platform_name = @platform_name)
-    url_path = '/policy/combined/sensor-update/v2'
+  def version_from_update_policy(update_policy = @update_policy, platform_name = @platform_name)
+    query = CGI.escape("platform_name:'#{platform_name}'+name.raw:'#{update_policy}'")
+    url_path = "/policy/combined/sensor-update/v2?filter=#{query}"
 
-    query = CGI.escape("platform_name:'#{platform_name}'+name.raw:'#{policy_name}'")
-
-    request = Net::HTTP::Get.new("#{url_path}?filter=#{query}")
+    request = Net::HTTP::Get.new(url_path)
     request['Content-Type'] = 'application/json'
     request['Authorization'] = "Bearer #{@bearer_token.unwrap}"
 
@@ -52,15 +51,17 @@ class FalconApi
       body = JSON.parse(resp.read_body)
 
       if body['resources'].nil? || body['resources'].empty?
-        raise ArgumentError, "policy: '#{policy_name}' not found for platform: '#{platform_name}'"
+        raise ArgumentError, "Policy: '#{update_policy}' not found for Platform: '#{platform_name}'"
+      end
+
+      unless body['resources'][0]['settings'].key?('sensor_version')
+        raise Puppet::Error, "Policy: '#{update_policy}' and Platform: '#{platform_name}' returned zero installer versions"
       end
 
       @version = body['resources'][0]['settings']['sensor_version']
       version
     else
-      puts resp.code
-      puts resp.header
-      puts resp.value
+      raise Puppet::Error, "Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}"
     end
   end
 
@@ -83,14 +84,12 @@ class FalconApi
       body = JSON.parse(resp.read_body)
 
       if body['resources'].nil? || body['resources'].empty?
-        raise ArgumentError, "no installers found for query: '#{query}'"
+        raise Puppet::Error, "No installers found for query: '#{query}'"
       end
 
       body['resources']
     else
-      puts resp.code
-      puts resp.header
-      puts resp.value
+      raise Puppet::Error, "Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}"
     end
   end
 
@@ -112,9 +111,7 @@ class FalconApi
         file.write(resp.read_body)
       end
     else
-      puts resp.code
-      puts resp.header
-      puts resp.value
+      raise Puppet::Error, "Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}"
     end
   end
 
@@ -152,8 +149,7 @@ class FalconApi
     when Net::HTTPSuccess, Net::HTTPRedirection then
       Puppet::Pops::Types::PSensitiveType::Sensitive.new(JSON.parse(resp.read_body)['access_token'])
     else
-      puts resp.code
-      puts resp.value
+      raise Puppet::Error, "Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}"
     end
   end
 end
