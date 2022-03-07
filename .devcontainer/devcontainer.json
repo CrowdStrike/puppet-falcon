@@ -1,10 +1,20 @@
 {
 	"name": "Puppet Agent, PDK, Bolt",
 	"dockerFile": "Dockerfile",
-	"settings": {},
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"puppet.puppet-vscode",
-		"rebornix.Ruby"
-	]
+		"misogi.ruby-rubocop",
+		"castwide.solargraph"
+	],
+	"settings": {
+		"[ruby]": {
+			"editor.defaultFormatter": "misogi.ruby-rubocop"
+		},
+		"ruby.rubocop.suppressRubocopWarnings": true,
+	},
+	"mounts": [
+		"source=${localWorkspaceFolder},target=/etc/puppetlabs/code/environments/production/modules/falcon,type=bind,consistency=cached",
+	],
+	"postStartCommand": "bundle install"
 }
