@@ -45,8 +45,23 @@ class falcon::install (
 
   $info = falcon::sensor_download_info($client_id, $client_secret, $config)
 
-  notify { 'title':
-    message => $info
+  if $facts['falcon_version'] == $info['version'] {
+    $sensor_download_ensure = 'absent'
+  } else {
+    $sensor_download_ensure = 'present'
+  }
+
+  sensor_download { 'Download Sensor Package':
+    ensure       => $sensor_download_ensure,
+    name         => $info['file_path'],
+    sha256       => $info['sha256'],
+    bearer_token => $info['bearer_token'],
+    falcon_cloud => 'api.crowdstrike.com',
+  }
+
+  package { 'falcon-sensor':
+    ensure => $info['version'],
+    source => $info['file_path'],
   }
 }
 
