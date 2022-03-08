@@ -17,7 +17,7 @@ class FalconApi
   # - client_id - the client id to generate the bearer token if not provided.
   # - client_secret - the client id to generate the bearer token if not provided.
   def initialize(falcon_cloud:, bearer_token: nil, client_id: nil, client_secret: nil)
-    if client_id.nil? || client_secret.nil? && bearer_token.nil?
+    if (client_id.nil? || client_secret.nil?) && bearer_token.nil?
       raise ArgumentError, 'client_id and client_secret or bearer_token must be provided'
     end
 
@@ -101,7 +101,7 @@ class FalconApi
 
     request = Net::HTTP::Get.new(url_path)
     request['Content-Type'] = 'application/json'
-    request['Authorization'] = "Bearer #{@bearer_token.unwrap}"
+    request['Authorization'] = "Bearer #{@bearer_token}"
 
     resp = @http_client.request(request)
 
