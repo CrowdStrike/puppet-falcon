@@ -61,7 +61,7 @@ class FalconApi
       @version = body['resources'][0]['settings']['sensor_version']
       version
     else
-      raise Puppet::Error, "Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}"
+      raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
     end
   end
 
@@ -89,7 +89,7 @@ class FalconApi
 
       body['resources']
     else
-      raise Puppet::Error, "Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}"
+      raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
     end
   end
 
@@ -111,12 +111,23 @@ class FalconApi
         file.write(resp.read_body)
       end
     else
-      raise Puppet::Error, "Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}"
+      raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
     end
   end
 
   # Private class methods
   private
+
+  # Ensure error message does not include client_id, client_secret, or bearer_token.
+  def sanitize_error_message(message)
+    [@client_id, @client_secret, @bearer_token].each do |value|
+      if value.is_a?(Puppet::Pops::Types::PSensitiveType::Sensitive)
+        value = value.unwrap
+      end
+      message.gsub!(value, '<REDACTED>') if !value.nil? && !value.empty?
+    end
+    message
+  end
 
   # Returns a new Net::HTTP instance.
   def http_client
@@ -149,7 +160,7 @@ class FalconApi
     when Net::HTTPSuccess, Net::HTTPRedirection then
       Puppet::Pops::Types::PSensitiveType::Sensitive.new(JSON.parse(resp.read_body)['access_token'])
     else
-      raise Puppet::Error, "Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}"
+      raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
     end
   end
 end
