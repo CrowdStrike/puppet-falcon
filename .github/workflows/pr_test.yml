@@ -1,0 +1,125 @@
+name: "PR Testing"
+
+on:
+  pull_request_target:
+      types: [ labeled ]
+      paths:
+        - 'lib/**'
+        - 'manifests/**'
+        - '.github/workflows/pr_test.yml'
+jobs:
+  setup_matrix:
+    if: |
+      github.event_name == 'push' ||
+      github.event.label.name == 'ok-to-test'
+    name: "Setup Test Matrix"
+    runs-on: ubuntu-20.04
+    outputs:
+      matrix: ${{ steps.get-matrix.outputs.matrix }}
+    steps:
+    - name: Checkout Source
+      uses: actions/checkout@v2
+    - name: Activate Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "2.7"
+        bundler-cache: true
+    - name: Print bundle environment
+      run: | 
+        bundle env
+    - name: Setup Acceptance Test Matrix
+      id: get-matrix
+      run: |
+        bundle exec matrix_from_metadata_v2 --exclude-platforms '["sles-15","redhat-8", "windows-10", "windows-2016","windows-2019"]'
+    - name: Print matrix JSON
+      run: |
+        echo  ${{ steps.get-matrix.outputs.matrix }}
+  Acceptance:
+    name: "${{matrix.platforms.label}}, ${{matrix.collection}}"
+    if: |
+      github.event_name == 'push' ||
+      github.event.label.name == 'ok-to-test'
+    needs:
+      - setup_matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platforms: ${{ fromJson(needs.setup_matrix.outputs.matrix).platforms }}
+        collection: ${{ fromJson(needs.setup_matrix.outputs.matrix).collection }}
+        include:
+          - platforms.provider: "provision::docker"
+            os: ubuntu-20.04
+          - platforms.label: "Windows-10"
+            os: macos-10.15
+            platforms:
+              label: "Windows-10"
+              provider: "vagrant"
+              image: "StefanScherer/windows_10"
+            collection: "puppet6-nightly"
+          - platforms.label: "Windows-10"
+            os: macos-10.15
+            platforms:
+              label: "Windows-10"
+              provider: "vagrant"
+              image: "StefanScherer/windows_10"
+            collection: "puppet7-nightly"
+
+    steps:
+    - run: |
+        echo 'image=${{ matrix.platforms.image }}'
+        echo 'collection=${{ matrix.collection }}'
+        echo 'label=${{ matrix.platforms.label }}'
+        echo 'provider=${{ matrix.platforms.provider }}'
+    - name: Checkout Source
+      uses: actions/checkout@v2
+    - name: Cache Vagrant boxes
+      if: ${{ matrix.platforms.provider == 'vagrant' }}
+      uses: actions/cache@v2
+      with:
+        path: ~/.vagrant.d/boxes
+        # Since the workflow is adding the vagrant provider to the matrix, we will use
+        # the workflow hash as part of the key.
+        key: ${{ runner.os }}-vagrant-${{ hashFiles('./.github/workflows/pr_test.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-vagrant-
+    - name: Activate Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "2.7"
+        bundler-cache: true
+    - name: Print bundle environment
+      run: |
+        bundle env
+    - name: Provision test environment
+      run: |
+        CI=true bundle exec rake 'litmus:provision[${{matrix.platforms.provider}},${{ matrix.platforms.image }}]'
+
+        if [ -f 'spec/fixtures/litmus_inventory.yaml' ];
+        then
+          FILE='spec/fixtures/litmus_inventory.yaml'
+        elif [ -f 'inventory.yaml' ];
+        then
+          FILE='inventory.yaml'
+        fi
+        sed -e 's/password: .*/password: "[redacted]"/' < $FILE || true
+    - name: Install agent
+      run: |
+        CI=true bundle exec rake 'litmus:install_agent[${{ matrix.collection }}]'
+    - name: Install module
+      run: |
+        CI=true bundle exec rake 'litmus:install_module'
+    - name: Run acceptance tests
+      env:
+        CLIENT_ID: ${{ secrets.LITMUS_CLIENT_ID }}
+        CLIENT_SECRET: ${{ secrets.LITMUS_CLIENT_SECRET }}
+        CID: ${{ secrets.LITMUS_CID }}
+      run: |
+        CI=true bundle exec rake 'litmus:acceptance:parallel'
+    - name: Remove test environment
+      if: ${{ always() }}
+      continue-on-error: true
+      run: |
+        if [[ -f inventory.yaml || -f spec/fixtures/litmus_inventory.yaml ]]; then
+          CI=true bundle exec rake 'litmus:tear_down'
+        fi

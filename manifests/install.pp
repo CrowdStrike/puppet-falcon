@@ -64,5 +64,3 @@ class falcon::install (
     source => $info['file_path'],
   }
 }
-
-include falcon::install

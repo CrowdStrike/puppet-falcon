@@ -1,0 +1,5 @@
+---
+default:
+  provisioner: docker
+  images: 
+    - 'ubuntu:bionic'
