@@ -2,12 +2,10 @@
   "name": "crowdstrike-falcon",
   "version": "0.1.0",
   "author": "crowdstrike",
-  "summary": "",
+  "summary": "Module to manage CrowdStrike Falcon Sensor",
   "license": "Apache-2.0",
-  "source": "",
-  "dependencies": [
-
-  ],
+  "source": "https://github.com/crowdstrike/puppet-falcon",
+  "dependencies": [],
   "operatingsystem_support": [
     {
       "operatingsystem": "CentOS",
@@ -73,15 +71,8 @@
       "operatingsystem": "windows",
       "operatingsystemrelease": [
         "2019",
+        "2016",
         "10"
-      ]
-    },
-    {
-      "operatingsystem": "AIX",
-      "operatingsystemrelease": [
-        "6.1",
-        "7.1",
-        "7.2"
       ]
     }
   ],

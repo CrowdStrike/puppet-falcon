@@ -13,6 +13,12 @@
 		},
 		"ruby.rubocop.suppressRubocopWarnings": true,
 	},
+	"features": {
+		"docker-in-docker": {
+			"version": "latest"
+		},
+		"sshd": "latest"
+	},
 	"mounts": [
 		"source=${localWorkspaceFolder},target=/etc/puppetlabs/code/environments/production/modules/falcon,type=bind,consistency=cached",
 	],
