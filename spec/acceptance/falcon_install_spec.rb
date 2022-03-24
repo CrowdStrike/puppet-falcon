@@ -13,7 +13,7 @@ describe 'install falcon' do
   end
 
   it 'applies' do
-    apply_manifest(pp)
+    apply_manifest(pp, { catch_failures: true })
   end
 
   describe package('falcon-sensor') do

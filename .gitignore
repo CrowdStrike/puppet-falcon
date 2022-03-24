@@ -27,3 +27,4 @@
 .envrc
 /inventory.yaml
 /spec/fixtures/litmus_inventory.yaml
+setup_env.sh

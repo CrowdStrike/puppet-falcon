@@ -38,7 +38,7 @@ jobs:
     - name: Setup Acceptance Test Matrix
       id: get-matrix
       run: |
-        python ./.github/workflows/files/generate_matrix.py -g linux windows
+        python ./.github/workflows/files/generate_matrix.py -g linux
     - name: Print matrix JSON
       run: |
         echo  ${{ steps.get-matrix.outputs.matrix }}
@@ -107,8 +107,9 @@ jobs:
         CLIENT_ID: ${{ secrets.LITMUS_CLIENT_ID }}
         CLIENT_SECRET: ${{ secrets.LITMUS_CLIENT_SECRET }}
         CID: ${{ secrets.LITMUS_CID }}
+        DEBUG: true
       run: |
-        CI=true bundle exec rake 'litmus:acceptance:parallel'
+        CI=true DEBUG=true bundle exec rake 'litmus:acceptance:parallel'
     - name: Remove test environment
       if: ${{ always() }}
       continue-on-error: true
