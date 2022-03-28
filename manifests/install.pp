@@ -35,6 +35,12 @@ class falcon::install (
   Optional[Numeric] $version_decrement = 0,
 ) {
 
+  $sensor_package_name = $facts['kernel'] ? {
+    'Linux' => 'falcon-sensor',
+    'Darwin' => 'falcon',
+    'windows' => 'CrowdStrike Windows Sensor'
+  }
+
   $config = {
     'version' => $version,
     'falcon_cloud' => $falcon_cloud,
@@ -59,7 +65,7 @@ class falcon::install (
     falcon_cloud => $falcon_cloud,
   }
 
-  package { 'falcon-sensor':
+  package { $sensor_package_name:
     ensure => $info['version'],
     source => $info['file_path'],
   }
