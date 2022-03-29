@@ -31,25 +31,27 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
 
   def sensor_download_info(client_id, client_secret, options)
     scope = closure_scope
+
     platform_name = platform(scope)
-    os_name = platform_name.casecmp('mac').zero? ? 'macOS' : scope['facts']['os']['name']
+    os_name = os_name(scope, platform_name)
+    os_version = os_version(scope, os_name)
 
     falcon_api = FalconApi.new(falcon_cloud: options['falcon_cloud'], client_id: client_id, client_secret: client_secret)
     falcon_api.platform_name = platform_name
 
     # If version is provied, use it to get the sensor package info
     if options.key?('version') && !options['version'].nil?
-      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name)
+      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name, os_version: os_version)
       installer = falcon_api.falcon_installers(query)[0]
     # If update_policy is provided, use it to get the sensor package info
     elsif options.key?('update_policy') && !options['update_policy'].nil?
       falcon_api.update_policy = options['update_policy']
       version = falcon_api.version_from_update_policy
-      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name)
+      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name, os_version: os_version)
       installer = falcon_api.falcon_installers(query)[0]
     # If neither are provided, use the `version_decrement` to pull the n-x version for the platform and os`
     else
-      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name)
+      query = build_sensor_installer_query(platform_name: platform_name, os_name: os_name, os_version: os_version)
       version_decrement = options['version_decrement']
       installers = falcon_api.falcon_installers(query)
 
@@ -67,6 +69,8 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
     # 6.25.0-1302 so the below regex is used to make this change.
     # TODO: Check if macos and windows package version needs the same fix
     version = version.gsub(%r{\.(\d+)\.(\d+)}, '.\1.0-\2')
+    version += ".el#{os_version}" if os_name.casecmp('RHEL/CentOS/Oracle').zero?
+    version += ".amzn#{os_version}" if os_name.casecmp('Amazon Linux').zero?
 
     {
       'bearer_token' => falcon_api.bearer_token,
