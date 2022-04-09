@@ -1,4 +1,4 @@
-name: "PR Testing"
+name: "PR Acceptance Test"
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       paths:
         - 'lib/**'
         - 'manifests/**'
-        - '.github/workflows/pr_test.yml'
+        - '.github/workflows/pr_acceptance_test.yml'
 jobs:
   setup_matrix:
     if: |
@@ -73,7 +73,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.vagrant.d/boxes
-        key: ${{ runner.os }}-vagrant-${{ hashFiles('./.github/workflows/pr_test.yml') }}
+        key: ${{ runner.os }}-vagrant-${{ hashFiles('./.github/workflows/pr_acceptance_test.yml') }}
         restore-keys: |
           ${{ runner.os }}-vagrant-
     - name: Activate Ruby 2.7

@@ -8,20 +8,29 @@
   "dependencies": [],
   "operatingsystem_support": [
     {
+      "operatingsystem": "Amazon",
+      "operatingsystemrelease": [
+        "2"
+      ]
+    },
+    {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "7"
+        "7",
+        "8"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
+        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
+        "7",
         "8"
       ]
     },
@@ -34,45 +43,16 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "10"
+        "10",
+        "11"
       ]
     },
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "18.04"
-      ]
-    },
-    {
-      "operatingsystem": "Fedora",
-      "operatingsystemrelease": [
-        "29"
-      ]
-    },
-    {
-      "operatingsystem": "Darwin",
-      "operatingsystemrelease": [
-        "16"
-      ]
-    },
-    {
-      "operatingsystem": "SLES",
-      "operatingsystemrelease": [
-        "15"
-      ]
-    },
-    {
-      "operatingsystem": "Solaris",
-      "operatingsystemrelease": [
-        "11"
-      ]
-    },
-    {
-      "operatingsystem": "windows",
-      "operatingsystemrelease": [
-        "2019",
-        "2016",
-        "10"
+        "16.04",
+        "18.04",
+        "20.04"
       ]
     }
   ],

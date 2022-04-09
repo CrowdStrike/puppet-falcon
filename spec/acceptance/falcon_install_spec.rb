@@ -7,13 +7,15 @@ describe 'install falcon' do
         falcon_cloud => 'api.us-2.crowdstrike.com',
         client_id => Sensitive('#{ENV['CLIENT_ID']}'),
         client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
-        update_policy => 'platform_default'
+        update_policy => 'platform_default',
+        cid => '#{ENV['CID']}',
       }
     MANIFEST
   end
 
-  it 'applies' do
-    apply_manifest(pp, { catch_failures: true })
+  it 'applies idempotently' do
+    apply_manifest(pp, { catch_failures: true, debug: true })
+    apply_manifest(pp, { catch_changes: true, debug: true })
   end
 
   describe package('falcon-sensor') do

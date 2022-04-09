@@ -10,6 +10,7 @@ describe :falcon_version, type: :fact do
 
   before :each do
     Facter.clear
+    allow(Facter.fact(:kernel)).to receive(:value).and_return('Linux')
   end
 
   it 'returns a value' do

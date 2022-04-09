@@ -3,11 +3,12 @@ Puppet::Type.newtype(:sensor_download) do
 
   ensurable
 
-  newparam(:name) do
+  newparam(:file_path) do
     desc 'The full path to the file.'
   end
 
   newparam(:sha256) do
+    isnamevar
     desc 'The sha256 of the package to download'
   end
 
@@ -17,6 +18,14 @@ Puppet::Type.newtype(:sensor_download) do
 
   newparam(:falcon_cloud) do
     desc 'The falcon cloud URI to use'
+  end
+
+  newparam(:manage) do
+    desc 'If true download the required sensor package if current sensor version does not match desired version. False only download sensor package when no sensor is installed'
+  end
+
+  newparam(:version) do
+    desc 'The falcon sensor version that should be installed.'
   end
 
   private

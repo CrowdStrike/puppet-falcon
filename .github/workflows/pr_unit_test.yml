@@ -1,0 +1,33 @@
+name: "PR Unit Test"
+
+on:
+  push:
+  pull_request:
+      paths:
+        - 'lib/**'
+        - 'manifests/**'
+        - 'spec/**'
+        - '.github/workflows/pr_unit_test.yml'
+jobs:
+  unit_tests:
+    name: "Run Unit Tests"
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout Source
+      uses: actions/checkout@v2
+    - name: Activate Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "2.7"
+        bundler-cache: true
+    - name: Install PDK
+      env:
+        PDK_DISABLE_ANALYTICS: true
+      run: |
+        wget https://apt.puppet.com/puppet-tools-release-focal.deb
+        sudo dpkg -i puppet-tools-release-focal.deb
+        sudo apt-get update
+        sudo apt-get install pdk
+    - name: Run Unit Tests
+      run: |
+        pdk test unit -v
