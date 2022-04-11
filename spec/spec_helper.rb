@@ -2,14 +2,24 @@
 
 RSpec.configure do |c|
   c.mock_with :rspec
+  c.after(:suite) do
+    RSpec::Puppet::Coverage.report!
+    RSpec::Puppet::Coverage.report!(90)
+  end
 end
 
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet-facts'
+require 'webmock/rspec'
 
 require 'spec_helper_local' if File.file?(File.join(File.dirname(__FILE__), 'spec_helper_local.rb'))
 
 include RspecPuppetFacts
+
+# WebMock Settings
+
+# Disable remote connections to prevent API calls while unit testing
+WebMock.disable_net_connect!(allow_localhost: true)
 
 default_facts = {
   puppetversion: Puppet.version,

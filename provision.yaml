@@ -1,4 +1,10 @@
 ---
+
+local:
+  provisioner: docker
+  images:
+    - 'litmusimage/centos:8'
+
 linux:
   provisioner: docker
   images: 
