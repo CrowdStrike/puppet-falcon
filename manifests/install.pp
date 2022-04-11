@@ -1,66 +1,65 @@
-# @summary configures and install CrowdStrike Falcon Sensor
+# @summary 
+#   This class handles falcon sensor package.
 #
-# @example Basic usage
-#   class { 'falcon':
-#     client_id => '<client_id>',
-#     client_secret => '<client_secret>'
-#     update_policy => 'platform_default'
-#   }
+# @api private
 #
-# @param client_id
-#   The client id used to authenticate with the Falcon API
-# @param client_secret
-#   The client secret used to authenticate with the Falcon API
-# @param falcon_cloud
-#  The name of the cloud to use for the Falcon API
-# @param update_policy
-#   The update policy to use to determine the version to download and install. `version` has precedence over `update_policy`.
-# @param sensor_source
-#  When provided the source will be passed to the package instead of downloading the sensor based on version or update policy
-# @param sensor_tmp_dir
-#  The directory to use to stage the sensor package
-#  `/tmp` for linux/macOS and `%TEMP%` for Windows
-# @param version
-#  The version of the sensor to install. When provided `update_policy` and `version_decrement` will be ignored
-# @param version_decrement
-#  The number of versions to decrement from the latest version. When `version`, `update_policy`, or `sensor_source` are not provided
-#  this will be used to determine the version to download and install.
-class falcon::install (
-  Sensitive $client_id,
-  Sensitive $client_secret,
-  String $falcon_cloud = 'api.crowdstrike.com',
-  Optional[String] $version = undef,
-  Optional[String] $update_policy = undef,
-  Optional[String] $sensor_tmp_dir = undef,
-  Optional[Numeric] $version_decrement = 0,
-) {
+class falcon::install {
 
-  $config = {
-    'version' => $version,
-    'falcon_cloud' => $falcon_cloud,
-    'update_policy' => $update_policy,
-    'sensor_tmp_dir' => $sensor_tmp_dir,
-    'version_decrement' => $version_decrement,
-  }
+  if $falcon::package_manage {
 
-  $info = falcon::sensor_download_info($client_id, $client_secret, $config)
+    if $falcon::install_method == 'api' {
+      if !($falcon::client_id and $falcon::client_secret) {
+        fail("client_id and client_secret are required when install_method is 'api'")
+      }
 
-  if $facts['falcon_version'] == $info['version'] {
-    $sensor_download_ensure = 'absent'
-  } else {
-    $sensor_download_ensure = 'present'
-  }
+      $config = {
+        'version' => $falcon::version,
+        'falcon_cloud' => $falcon::falcon_cloud,
+        'update_policy' => $falcon::update_policy,
+        'sensor_tmp_dir' => $falcon::sensor_tmp_dir,
+        'version_decrement' => $falcon::version_decrement,
+      }
 
-  sensor_download { 'Download Sensor Package':
-    ensure       => $sensor_download_ensure,
-    name         => $info['file_path'],
-    sha256       => $info['sha256'],
-    bearer_token => $info['bearer_token'],
-    falcon_cloud => $falcon_cloud,
-  }
+      $info = falcon::sensor_download_info($falcon::client_id, $falcon::client_secret, $config)
 
-  package { 'falcon-sensor':
-    ensure => $info['version'],
-    source => $info['file_path'],
+      sensor_download { 'Download Sensor Package':
+        ensure         => 'present',
+        version_manage => $falcon::version_manage,
+        version        => $info['version'],
+        file_path      => $info['file_path'],
+        sha256         => $info['sha256'],
+        bearer_token   => $info['bearer_token'],
+        falcon_cloud   => $falcon::falcon_cloud,
+        before         => Package['falcon']
+      }
+
+      if $falcon::version_manage {
+        $ensure = $info['version']
+      } else {
+        $ensure = 'present'
+      }
+
+      if $falcon::cleanup_installer {
+        file { 'Ensure Package is Removed':
+          ensure  => 'absent',
+          path    => $info['file_path'],
+          require => Package['falcon']
+        }
+      }
+
+      $package_options = {
+        'ensure' => $ensure,
+        'name'   => $falcon::package_name,
+        'source' => $info['file_path'],
+      } + $falcon::package_options
+    }
+
+    if $falcon::install_method == 'local' {
+      $package_options = { 'name' => $falcon::package_name } + $falcon::package_options
+    }
+
+    package { 'falcon':
+      * => $package_options
+    }
   }
 }

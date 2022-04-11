@@ -29,6 +29,8 @@ group :development do
   gem 'rubocop',                                                 require: false
   gem 'solargraph',                                              require: false
   gem 'puppet_litmus',                                           require: false
+  gem 'webmock',                                                 require: false
+  gem 'rspec-puppet-facts',                                      require: false
 end
 group :system_tests do
   gem "puppet-module-posix-system-r#{minor_version}", '~> 1.0', require: false, platforms: [:ruby]

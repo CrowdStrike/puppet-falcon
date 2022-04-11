@@ -5,14 +5,38 @@ Puppet::Type.type(:sensor_download).provide(:default) do
 
   def create
     falcon_api = FalconApi.new(falcon_cloud: @resource[:falcon_cloud], bearer_token: @resource[:bearer_token])
-    falcon_api.download_installer(@resource['sha256'], @resource['name'])
+    Puppet.notice("Downloading sensor package to location: #{resource[:file_path]}")
+    falcon_api.download_installer(@resource['sha256'], @resource['file_path'])
+
+    raise Puppet::Error, "Failed to download sensor package #{@resource[:file_path]}" unless File.exist?(@resource['file_path'])
   end
 
   def destroy
-    File.unlink(@resource[:name])
+    Puppet.notice("Deleting #{@resource[:file_path]}")
+    File.unlink(@resource[:file_path])
   end
 
   def exists?
-    File.exist?(@resource[:name])
+    falcon_version = Facter.value('falcon_version')
+    installed = falcon_version != :purged
+
+    Puppet.debug("version_manage is #{@resource[:version_manage]}")
+    Puppet.debug("falcon_version fact returns #{falcon_version}")
+    Puppet.debug("Falcon is installed check returns #{installed}")
+
+    # If version_manage is true check if the installed version is equal to the required version
+    if @resource[:version_manage]
+      insync = @resource[:version] == Facter.value('falcon_version')
+      Puppet.debug("Desired version is equal to installed version: #{insync}")
+      return insync
+    end
+
+    # If falcon is already installed return insync
+    Puppet.debug("Falcon is already installed: #{installed}")
+    return true if installed
+
+    # If falcon is absent return file package insync
+    Puppet.debug('Falcon is absent checking if sensor package is present')
+    File.exist?(@resource[:file_path])
   end
 end
