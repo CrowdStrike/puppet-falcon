@@ -22,15 +22,17 @@ class falcon::install {
 
       $info = falcon::sensor_download_info($falcon::client_id, $falcon::client_secret, $config)
 
-      sensor_download { 'Download Sensor Package':
-        ensure         => 'present',
-        version_manage => $falcon::version_manage,
-        version        => $info['version'],
-        file_path      => $info['file_path'],
-        sha256         => $info['sha256'],
-        bearer_token   => $info['bearer_token'],
-        falcon_cloud   => $falcon::falcon_cloud,
-        before         => Package['falcon']
+      if $falcon::version_manage or ($facts['falcon_version'] in ['absent', undef]){
+          sensor_download { 'Download Sensor Package':
+            ensure         => 'present',
+            version_manage => $falcon::version_manage,
+            version        => $info['version'],
+            file_path      => $info['file_path'],
+            sha256         => $info['sha256'],
+            bearer_token   => $info['bearer_token'],
+            falcon_cloud   => $falcon::falcon_cloud,
+            before         => Package['falcon']
+        }
       }
 
       if $falcon::version_manage {

@@ -140,6 +140,30 @@ describe 'falcon' do
               end
 
               it { is_expected.to contain_package('falcon').with_ensure('present') }
+
+              context 'when falcon is installed' do
+                let(:facts) do
+                  super().merge(falcon_version: '4.1.0-4404')
+                end
+
+                it { is_expected.not_to contain_sensor_download('Download Sensor Package') }
+              end
+
+              context 'when falcon is not installed' do
+                let(:facts) do
+                  super().merge(falcon_version: 'absent')
+                end
+
+                it { is_expected.to contain_sensor_download('Download Sensor Package') }
+              end
+            end
+
+            context 'when version_manage=true' do
+              let(:params) do
+                super().merge(version_manage: true)
+              end
+
+              it { is_expected.to contain_sensor_download('Download Sensor Package').with_ensure('present') }
             end
           end
 
