@@ -143,13 +143,17 @@ describe 'falcon' do
 
               context 'when falcon is installed' do
                 let(:facts) do
-                  super().merge(falcon_version: ['4.1.0-4404'])
+                  super().merge(falcon_version: '4.1.0-4404')
                 end
 
                 it { is_expected.not_to contain_sensor_download('Download Sensor Package') }
               end
 
               context 'when falcon is not installed' do
+                let(:facts) do
+                  super().merge(falcon_version: 'absent')
+                end
+
                 it { is_expected.to contain_sensor_download('Download Sensor Package') }
               end
             end
