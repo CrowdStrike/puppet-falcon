@@ -10,7 +10,7 @@
 
 ## Description
 
-The `falcon` modules install, configures, and manges the `falcon` service across multiple operating systems and distributions.
+The `falcon` module installs, configures, and manages the `falcon` service across multiple operating systems and distributions.
 
 > **Note**: `puppet-falcon` is an open source project, not a CrowdStrike product. As such, it carries no formal support, expressed or implied.
 
@@ -20,7 +20,7 @@ All parameters for the falcon module are contained within the main `falcon` clas
 
 Below are some of the common use cases.
 
-> **Note**: `falcon` packages are not public so this module has two options for installing the falcon sensor. Using the `install_method` parameter you can choose `api` or `local`. `api` is the default. More information is outline in [API vs Local install methods](#api-vs-local-install-methods).
+> **Note**: `falcon` packages are not public so this module has two options for installing the falcon sensor. Using the `install_method` parameter you can choose `api` or `local`. `api` is the default. More information is outlined in [API vs Local install methods](#api-vs-local-install-methods).
 
 ### Basic Install, Configure, and Manage the service
 
@@ -52,15 +52,15 @@ class {'falcon':
 
 ### Using the `api` install method
 
-The  `api` install methods uses the API to download the sensor package, and the module infers the `package` parameters required to install the sensor.
+The  `api` install methods uses the API to download the sensor package. The version of the package that is downloaded are determined by the parameters passed to the module.
+
+There are three parameters that alter the behavior of the `api` install method. Only one of these parameters can be used at a time, and they are evaluated in the order they are listed below.
+
+  - `version` -  Will download the sensor package matching the version you specify.
+  - `update_policy` - Will download the version specified by the update policy.
+  - `version_decrement` - Will download the `n`th version before the current version.
 
 The drawbacks to using the `api` install method are outlined in [API vs Local install methods](#api-vs-local-install-methods).
-
-There are three paramters that alter the behavior of the `api` install method.
-
-  - `version` - It will download the sensor package matching the version you specify.
-  - `update_policy` - It will download the version specified by the update policy.
-  - `version_decrement` - It will download the `n`th version before the current version.
 
 Examples for each are below.
 **Using the `version` parameter**
@@ -112,7 +112,7 @@ Some reasons you may use this method are:
 
 You can learn more about the `local` install method in [API vs Local install methods](#api-vs-local-install-methods).
 
-When you use the `local` install method, `package_options` is required. Parameters in `package_options` are passed to the the `package` resource. You must provide any required paramaters for the `package` resource except the `name` parameter. The module will pick the appopriate name based on the operating system. You can still override the name by specifying the `name` property in the `package_options` hash.
+When you use the `local` install method, `package_options` is required. Parameters in `package_options` are passed to the the `package` resource. You must provide any required parameters for the `package` resource except the `name` parameter. The module will pick the appropriate name based on the operating system. You can still override the name by specifying the `name` property in the `package_options` hash.
 
 
 ``` puppet
@@ -236,7 +236,7 @@ class {'falcon':
 
 ### Registering a `cid` with a provisioning token
 
-If your company requires a preovisioning token to register a agent, you can use the `provisioning_token` parameter.
+If your company requires a provisioning token to register a agent, you can use the `provisioning_token` parameter.
 
 ``` puppet
 class {'falcon':
@@ -253,11 +253,11 @@ class {'falcon':
 
 If you want to pin the agent version to a specific version using the `api` install method then you can set `version_manage` to true.
 
-The below example will consult the API to determine what version the `version_decrement` with the value of `2` resolves to. It then will download that version and ensure it is installed.
+In our example below we use `version_decrement`, but it works the same for all. Puppet will consult the API to determine what version `version_decrement => 2` resolves to. It then will download that version and ensure it is installed.
 
 Each subsequent run it will check the api to see if the version returned is the one installed. If for example, a new version is released it would cause the version returned from the check to change causing the agent to be upgraded to the new `n-2` version.
 
-> **warning**: This causes the module to consult the API every run to ensure the version the API returns is the version that is installed. This could cause rate limit issues for large deployments. If you want to have automate upgrades/downgrades and use the `api` install method it is generally suggested set `version_manage` to `false` and allow the CrowdStrike Update Policy do the upgrades/downgrades instead of Puppet.
+> **warning**: This causes the module to consult the API every run to ensure the version the API returns is the version that is installed. This could cause rate limit issues for large deployments. If you want to have automated upgrades/downgrades and use the `api` install method it is generally suggested to set `version_manage` to `false` and allow the CrowdStrike Update Policy to do the upgrades/downgrades instead of Puppet.
 
 
 ``` puppet
@@ -295,7 +295,7 @@ You can use `local` install method if you want full control and don't want to le
 
 Generally Puppet modules that manage a package control the full lifecycle of that package from installation to removal. The fact CrowdStrike agent packages are not public makes this hard.
 
-We still wanted to give a hands off way of quickly getting a package installed so we created the `api` install method. This method will require you to provide api credentials, and then we will download the correct package version from the CrowdStrike API. There are paramaters that let you control the behavior like setting `update_policy`. This will cause the module to download the correct version based on what the update policy suggests. [Examples of each here](#using-the-api-install-method).
+We still wanted to give a hands off way of quickly getting a package installed so we created the `api` install method. This method will require you to provide api credentials, and then we will download the correct package version from the CrowdStrike API. There are parameters that let you control the behavior like setting `update_policy`. This will cause the module to download the correct version based on what the update policy suggests. [Examples of each here](#using-the-api-install-method).
 
 However, this method might not be suitable for everyone so the `local` install method was created that gives you full control on how the sensor is installed.
 
@@ -306,7 +306,7 @@ However, this method might not be suitable for everyone so the `local` install m
 
 The api install method will use the falcon api to download the correct package version. The correct package version depends on what parameters you provide. You can see [Examples of each here](#using-the-api-install-method).
 
-The firt run will cause Puppet to call the approriate CrowdStrike apis to get the information needed to download the sensor package. It will then download the sensor package. Normal puppet resources then take over.
+The first run will cause Puppet to call the appropriate CrowdStrike apis to get the information needed to download the sensor package. It will then download the sensor package. After that, normal puppet resources take over.
 
 If you set `version_manage` to `true` every run will cause the module to consult the CrowdStrike API to get the appropriate package version. Then it will determine if the installed version is the same as the returned version. If they are not the same, then it will download the correct package version and do the appropriate install/update/downgrade actions.
 
@@ -318,7 +318,7 @@ If you set `version_manage` to `false` then api calls will only happen when the 
 
 The main limitation of the `api` install method is api rate limits. We haven't hit them ourselves, but it may be possible for large installations to hit a rate limit when using the `api` install method with `version_manage` set to `true`.
 
-Each time Puppet compiles a catalog for a node it uses the API to determine what version of the agent should be installed. If the agent is already on the correct version then no futher apis calls are made.
+Each time Puppet compiles a catalog for a node it uses the API to determine what version of the agent should be installed. If the agent is already on the correct version then no further apis calls are made.
 
 Setting `version_manage` to `false` will prevent any api calls unless the agent is not installed.
 
