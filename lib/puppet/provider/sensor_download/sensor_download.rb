@@ -17,7 +17,7 @@ Puppet::Type.type(:sensor_download).provide(:default) do
   end
 
   def exists?
-    falcon_version = Facter.value('falcon_version')
+    falcon_version = Facter.value('falcon').fetch('version', :purged)
     installed = [:absent, :purged, :undef, nil].include?(falcon_version) ? false : true
 
     Puppet.debug("version_manage is #{@resource[:version_manage]}")

@@ -22,7 +22,7 @@ class falcon::install {
 
       $info = falcon::sensor_download_info($falcon::client_id, $falcon::client_secret, $config)
 
-      if $falcon::version_manage or ($facts['falcon_version'] in ['absent', undef]){
+      if $falcon::version_manage or ($facts['falcon'].dig('version') in ['absent', undef]){
           sensor_download { 'Download Sensor Package':
             ensure         => 'present',
             version_manage => $falcon::version_manage,
