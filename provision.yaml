@@ -21,7 +21,6 @@ linux:
     - 'litmusimage/scientificlinux:7'
     - 'litmusimage/rockylinux:8'
     - 'litmusimage/almalinux:8'
-    - 'amazonlinux:2'
 
 windows:
   provisioner: vagrant
