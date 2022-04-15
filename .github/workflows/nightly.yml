@@ -1,0 +1,23 @@
+name: "nightly"
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  pdk_validate:
+    name: "Run Puppet Linters"
+    uses: ./.github/workflows/lint-checks.yml
+
+  unit_tests:
+    name: "Run Rspec tests"
+    uses: ./.github/workflows/unit-test.yml
+
+  acceptance_tests:
+    name: "Run Acceptance Tests"
+    uses: ./.github/workflows/acceptance-tests.yml
+    secrets:
+      LITMUS_CLIENT_ID: ${{ secrets.LITMUS_CLIENT_ID }}
+      LITMUS_CLIENT_SECRET: ${{ secrets.LITMUS_CLIENT_SECRET }}
+      LITMUS_CID: ${{ secrets.LITMUS_CID }}
