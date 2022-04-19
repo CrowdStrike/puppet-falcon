@@ -1,10 +1,18 @@
 {
   "name": "crowdstrike-falcon",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "author": "crowdstrike",
   "summary": "Module to manage CrowdStrike Falcon Sensor",
   "license": "MIT",
   "source": "https://github.com/crowdstrike/puppet-falcon",
+  "project_page": "https://github.com/crowdstrike/puppet-falcon",
+  "issues_url": "https://github.com/crowdstrike/puppet-falcon/issues",
+  "tags": [
+    "crowdstrike",
+    "falcon",
+    "sensor",
+    "agent"
+  ],
   "dependencies": [],
   "operatingsystem_support": [
     {

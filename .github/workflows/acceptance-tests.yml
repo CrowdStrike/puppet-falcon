@@ -2,6 +2,14 @@ name: "PR Acceptance Test"
 
 on:
   push:
+  workflow_call:
+    secrets:
+      LITMUS_CLIENT_ID:
+        required: true
+      LITMUS_CLIENT_SECRET:
+        required: true
+      LITMUS_CID:
+        required: true
   pull_request_target:
       types: [ labeled ]
       paths:
@@ -11,9 +19,9 @@ on:
 jobs:
   setup_matrix:
     if: |
-      github.event_name == 'push' ||
       (github.event_name == 'pull_request_target' &&
-      github.event.label.name == 'ok-to-test')
+      github.event.label.name == 'ok-to-test') ||
+      contains(fromJson('["push", "workflow_dispatch", "schedule"]'), github.event_name)
     name: "Setup Test Matrix"
     runs-on: ubuntu-20.04
     outputs:
@@ -44,10 +52,6 @@ jobs:
         echo  ${{ steps.get-matrix.outputs.matrix }}
   Acceptance:
     name: "${{matrix.platforms.label}}, ${{matrix.collection}}"
-    if: |
-      github.event_name == 'push' ||
-      (github.event_name == 'pull_request_target' &&
-      github.event.label.name == 'ok-to-test')
     needs:
       - setup_matrix
     runs-on: ${{ matrix.platforms.os }}
