@@ -1,20 +1,15 @@
 {
   "name": "crowdstrike-falcon",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "crowdstrike",
   "summary": "Module to manage CrowdStrike Falcon Sensor",
   "license": "MIT",
   "source": "https://github.com/crowdstrike/puppet-falcon",
   "project_page": "https://github.com/crowdstrike/puppet-falcon",
   "issues_url": "https://github.com/crowdstrike/puppet-falcon/issues",
-  "tags": [
-    "crowdstrike",
-    "falcon",
-    "security",
-    "sensor",
-    "agent"
+  "dependencies": [
+
   ],
-  "dependencies": [],
   "operatingsystem_support": [
     {
       "operatingsystem": "Amazon",
@@ -70,6 +65,13 @@
       "name": "puppet",
       "version_requirement": ">= 6.21.0 < 8.0.0"
     }
+  ],
+  "tags": [
+    "crowdstrike",
+    "falcon",
+    "security",
+    "sensor",
+    "agent"
   ],
   "pdk-version": "2.4.0",
   "template-url": "pdk-default#2.4.0",
