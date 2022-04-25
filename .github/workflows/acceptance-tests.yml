@@ -26,12 +26,26 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.get-matrix.outputs.matrix }}
+      ref: ${{ steps.git-vars.outputs.ref }}
+      repository: ${{ steps.git-vars.outputs.repository }}
     steps:
     - name: Checkout Source
       uses: actions/checkout@v2
       with:
-          ref: ${{github.event.pull_request.head.ref}}
+          ref: ${{github.event.pull_request.head.sha}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
+    - name: Setup git vars
+      id: git-vars
+      env: 
+        REF: ${{github.event.pull_request.head.sha}}
+        REPOSITORY: ${{github.event.pull_request.head.repo.full_name}}
+      run: |
+          echo ::set-output name=ref::${REF}
+          echo ::set-output name=repository::${REPOSITORY}
+    - name: Print git vars
+      run: |
+        echo ${{ steps.git-vars.outputs.ref}}
+        echo ${{ steps.git-vars.outputs.repository}}
     - name: Activate Ruby 2.7
       uses: ruby/setup-ruby@v1
       with:
@@ -67,11 +81,15 @@ jobs:
         echo 'label=${{ matrix.platforms.label }}'
         echo 'provider=${{ matrix.platforms.provider }}'
         echo 'os=${{ matrix.os }}'
+    - name: Print git vars
+      run: |
+        echo ${{needs.setup_matrix.outputs.ref}}
+        echo ${{needs.setup_matrix.outputs.repository}}
     - name: Checkout Source
       uses: actions/checkout@v2
       with:
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
+          ref: ${{needs.setup_matrix.outputs.ref}}
+          repository: ${{needs.setup_matrix.outputs.repository}}
     - name: Cache Vagrant boxes
       if: ${{ matrix.platforms.provider == 'vagrant' }}
       uses: actions/cache@v2
