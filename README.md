@@ -29,7 +29,8 @@ Below are some of the common use cases.
 
 class {'falcon':
   client_id     => Sensitive('12346'),
-  client_secret => Sensitive('12345')
+  client_secret => Sensitive('12345'),
+  cid           => 'ASDFKEWROU123KJFLS'
 }
 ```
 
@@ -44,7 +45,8 @@ $package_options = {
 
 class {'falcon': 
   install_method  => 'local',
-  package_options => $package_options
+  package_options => $package_options,
+  cid           => 'ASDFKEWROU123KJFLS'
 }
 ```
 
