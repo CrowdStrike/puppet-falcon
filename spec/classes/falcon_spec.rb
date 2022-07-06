@@ -6,6 +6,8 @@ describe 'falcon' do
   let(:cid) { 'AKDLKJFSDLFJ123KJ1L3' }
   let(:provisioning_token) { 'AKLDFJDSF12312IOJFLKSAF' }
 
+  let(:default_windows_install_options) { ['/install', '/quiet', '/norestart', "CID=#{cid}"] }
+
   let(:params) do
     {
       client_id: sensitive('example'),
@@ -74,6 +76,14 @@ describe 'falcon' do
         os_facts # + {falcon: {version: 'absent'}}
       end
 
+      if os_facts[:kernel] == 'windows'
+        let(:params) do
+          super().merge(
+              cid: cid
+            )
+        end
+      end
+
       describe 'with default parameters' do
         it { is_expected.to compile.with_all_deps }
 
@@ -84,12 +94,21 @@ describe 'falcon' do
       end
 
       describe 'falcon::install' do
+        let(:params) do
+          super().merge(
+              cid: cid
+            )
+        end
+
         context 'when install_method=local' do
           let(:source_param) { 'https://example.com/falcon-sensor-4.1.0-4404.amzn1.x86_64.rpm' }
           let(:ensure_param) { 'present' }
 
           let(:params) do
-            super().merge(install_method: 'local', package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name })
+            super().merge(
+                install_method: 'local', 
+                package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name },
+              )
           end
 
           it { is_expected.to compile.with_all_deps }
@@ -100,6 +119,33 @@ describe 'falcon' do
 
           it { is_expected.not_to contain_file('Ensure Package is Removed') }
           it { is_expected.not_to contain_sensor_download('Download Sensor Package') }
+
+          describe 'on windows install' do
+            if os_facts[:kernel] == 'windows'
+
+              context 'when provisioning_token is nil' do
+                it { is_expected.to contain_package('falcon').with_install_options(default_windows_install_options) }
+              end
+
+              context 'when provisioning_token is provided' do
+                let(:params) do
+                  super().merge(provisioning_token: provisioning_token,)
+                end
+                let(:options)  { default_windows_install_options + ["ProvToken=#{provisioning_token}"] }
+                it { is_expected.to contain_package('falcon').with_install_options(options) }
+              end
+
+              context 'allow install_options to be overridden' do
+                let(:params) do
+                  super().merge(
+                      package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name, 'install_options' => ['test']},
+                    )
+                end
+
+                it { is_expected.to contain_package('falcon').with_install_options(['test']) }
+              end
+            end
+          end
         end
 
         context 'when install_method=api' do
@@ -114,6 +160,41 @@ describe 'falcon' do
 
           it { is_expected.to contain_sensor_download('Download Sensor Package') }
           it { is_expected.to contain_sensor_download('Download Sensor Package').that_comes_before('Package[falcon]') }
+
+          describe 'on windows install' do
+            if os_facts[:kernel] == 'windows'
+
+              context 'when provisioning_token is nil' do
+                it { is_expected.to contain_package('falcon').with_install_options(default_windows_install_options) }
+              end
+
+              context 'when provisioning_token is provided' do
+                let(:params) do
+                  super().merge(provisioning_token: provisioning_token,)
+                end
+                let(:options)  { default_windows_install_options + ["ProvToken=#{provisioning_token}"] }
+                it { is_expected.to contain_package('falcon').with_install_options(options) }
+              end
+
+              context 'allow install_options to be overridden' do
+                let(:params) do
+                  super().merge(
+                      package_options: {'install_options' => ['test']},
+                    )
+                end
+
+                it { is_expected.to contain_package('falcon').with_install_options(['test']) }
+              end
+
+              context 'no cid provided' do
+                let(:params) do
+                  super().merge(cid: :undef)
+                end
+              
+                it { is_expected.to compile.and_raise_error(%r{CID is required to install the Falcon Sensor on Windows}) }
+              end
+            end
+          end
 
           describe 'version_decrement' do
             context 'when version_decrement is 0' do
@@ -201,25 +282,29 @@ describe 'falcon' do
       end
 
       describe 'falcon::config' do
-        it { is_expected.to contain_falconctl('falcon').with_cid(nil) }
-        it { is_expected.to contain_falconctl('falcon').with_provisioning_token(nil) }
 
-        context 'with cid' do
-          let(:params) { super().merge('cid' => cid) }
+        if os_facts[:kernel] != 'windows'
+          
+          it { is_expected.to contain_falconctl('falcon').with_cid(nil) }
+          it { is_expected.to contain_falconctl('falcon').with_provisioning_token(nil) }
 
-          it { is_expected.to contain_falconctl('falcon').with_cid(cid) }
-        end
+          context 'with cid' do
+            let(:params) { super().merge('cid' => cid) }
 
-        context 'with provisioning_token' do
-          let(:params) { super().merge('provisioning_token' => provisioning_token) }
+            it { is_expected.to contain_falconctl('falcon').with_cid(cid) }
+          end
 
-          it { is_expected.to contain_falconctl('falcon').with_provisioning_token(provisioning_token) }
-        end
+          context 'with provisioning_token' do
+            let(:params) { super().merge('provisioning_token' => provisioning_token) }
 
-        context 'when config_manage is false' do
-          let(:params) { super().merge('config_manage' => false) }
+            it { is_expected.to contain_falconctl('falcon').with_provisioning_token(provisioning_token) }
+          end
 
-          it { is_expected.not_to contain_falconctl('falcon') }
+          context 'when config_manage is false' do
+            let(:params) { super().merge('config_manage' => false) }
+
+            it { is_expected.not_to contain_falconctl('falcon') }
+          end
         end
       end
 

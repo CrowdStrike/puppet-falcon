@@ -135,7 +135,7 @@ class falcon (
   Optional[Boolean] $cleanup_installer           = $falcon::params::cleanup_installer,
   Optional[Numeric] $version_decrement           = $falcon::params::version_decrement,
   Optional[Enum['api', 'local']] $install_method = $falcon::params::install_method,
-  Hash[String, Any] $package_options               = $falcon::params::package_options,
+  Hash[String, Any] $package_options             = $falcon::params::package_options,
 
   # falcon::service
   Optional[Boolean] $service_manage              = $falcon::params::service_manage,

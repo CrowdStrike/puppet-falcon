@@ -60,8 +60,20 @@ class falcon::install {
       $package_options = { 'name' => $falcon::package_name } + $falcon::package_options
     }
 
+    if $facts['kernel'] == 'windows' {
+      unless $falcon::cid {
+        fail('CID is required to install the Falcon Sensor on Windows')
+      }
+      $_package_options = empty($falcon::provisioning_token) ? {
+        false   => {'install_options' => ['/install', '/quiet', '/norestart', "CID=${falcon::cid}", "ProvToken=${falcon::provisioning_token}"] } + $package_options, # lint:ignore:140chars
+        default => {'install_options' => ['/install', '/quiet', '/norestart', "CID=${falcon::cid}"] } + $package_options,
+      }
+    } else {
+      $_package_options = $package_options
+    }
+
     package { 'falcon':
-      * => $package_options
+      * => $_package_options
     }
   }
 }

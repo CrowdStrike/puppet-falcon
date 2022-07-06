@@ -58,6 +58,13 @@
         "18.04",
         "20.04"
       ]
+    },
+    {
+      "operatingsystem": "Windows",
+      "operatingsystemrelease": [
+        "2019",
+        "2016"
+      ]
     }
   ],
   "requirements": [
