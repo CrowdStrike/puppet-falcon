@@ -157,8 +157,10 @@ class FalconApi
     resp = @http_client.request(request)
 
     case resp
-    when Net::HTTPSuccess, Net::HTTPRedirection then
+    when Net::HTTPSuccess then
       Puppet::Pops::Types::PSensitiveType::Sensitive.new(JSON.parse(resp.read_body)['access_token'])
+    when Net::HTTPRedirection then
+      raise Puppet::Error, sanitize_error_message("Error - incorrect value for falcon_cloud: #{@falcon_cloud}. Update the falcon_cloud property with the correct cloud: #{resp.header['Location'].split('/')[2]}")
     else
       raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
     end
