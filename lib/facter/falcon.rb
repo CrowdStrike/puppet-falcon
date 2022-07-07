@@ -1,9 +1,16 @@
 Facter.add(:falcon, type: :aggregate) do
-  confine kernel: 'Linux'
-
   chunk(:version) do
-    # TODO: Verify windows and macos package names = `falcon-sensor`. If they don't use :kernal to set the correct key.
-    pkg_name = 'falcon-sensor'
+
+    kernel = Facter.value('kernel')
+
+    if kernel == 'Linux'
+      pkg_name = 'falcon-sensor'
+    elsif kernel == 'windows'
+      pkg_name = 'CrowdStrike Windows Sensor'
+    else
+      pkg_name = 'falcon'
+    end
+
     pkg_ensure = Puppet::Resource.indirection.find("package/#{pkg_name}").to_hash[:ensure]
 
     Puppet.debug("#{pkg_name} returned ensure: #{pkg_ensure}")
