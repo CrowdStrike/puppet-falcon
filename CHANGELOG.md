@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v0.2.0](https://github.com/crowdstrike/puppet-falcon/tree/v0.2.0) (2022-07-07)
+
+[Full Changelog](https://github.com/crowdstrike/puppet-falcon/compare/v0.1.0...v0.2.0)
+
+### Added
+
+- Add windows support for falcon [\#27](https://github.com/CrowdStrike/puppet-falcon/pull/27) ([ffalor](https://github.com/ffalor))
+
 ## [v0.1.0](https://github.com/crowdstrike/puppet-falcon/tree/v0.1.0) (2022-04-19)
 
 [Full Changelog](https://github.com/crowdstrike/puppet-falcon/compare/de2b319e3814b7090dc645138151eb842920e153...v0.1.0)
