@@ -40,6 +40,6 @@ class falcon::params {
   $service_name = $facts['kernel'] ? {
     'Linux' => 'falcon-sensor',
     'Darwin' => 'falcon-sensor',
-    'windows' => 'Falcon Sensor',
+    'windows' => 'CSFalconService',
   }
 }
