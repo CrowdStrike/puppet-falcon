@@ -14,7 +14,7 @@ The `falcon` module installs, configures, and manages the `falcon` service acros
 
 > **Note**: `puppet-falcon` is an open source project, not a CrowdStrike product. As such, it carries no formal support, expressed or implied.
 
-# Usage
+## Usage
 
 All parameters for the falcon module are contained within the main `falcon` class. There are many options that will modify what the module does. Refer to [REFERENCE.md](./REFERENCE.md) for more details.
 
@@ -28,8 +28,10 @@ Below are some of the common use cases.
 # using the `api` method
 
 class {'falcon':
+
   client_id     => Sensitive('12346'),
-  client_secret => Sensitive('12345')
+  client_secret => Sensitive('12345'),
+  cid           => 'AJKQUI123JFKSDFJK`
 }
 ```
 
@@ -44,7 +46,8 @@ $package_options = {
 
 class {'falcon': 
   install_method  => 'local',
-  package_options => $package_options
+  package_options => $package_options,
+  cid             => 'AJKQUI123JFKSDFJK`
 }
 ```
 
@@ -71,7 +74,8 @@ This takes precedence over `update_policy` and `version_decrement`.
 class { 'falcon':
   client_id     => Sensitive('12346'),
   client_secret => Sensitive('12345'),
-  version       => '1.0.0'
+  version       => '1.0.0',
+  cid           => 'AJKQUI123JFKSDFJK`
 }
 ```
 
@@ -83,7 +87,8 @@ This takes precedence over the `version_decrement` parameter.
 class { 'falcon':
   client_id     => Sensitive('12346'),
   client_secret => Sensitive('12345'),
-  update_policy => 'platform_default'
+  update_policy => 'platform_default',
+  cid           => 'AJKQUI123JFKSDFJK`
 }
 ```
 
@@ -97,7 +102,8 @@ A value of `0` will download the latest version, and a value of `2` will downloa
 class { 'falcon':
   client_id         => Sensitive('12346'),
   client_secret     => Sensitive('12345'),
-  version_decrement => 2
+  version_decrement => 2,
+  cid               => 'AJKQUI123JFKSDFJK`
 }
 ```
 
@@ -168,7 +174,8 @@ When `install_method` is `api` you can use the `cleanup_installer` parameter to 
 class { 'falcon':
   client_id         => Sensitive('12346'),
   client_secret     => Sensitive('12345'),
-  cleanup_installer => true
+  cleanup_installer => true,
+  cid               => 'AJKQUI123JFKSDFJK`
 }
 ```
 
@@ -203,7 +210,10 @@ class {'falcon':
 
 ---
 
-### Opt out of the module configuring the agent
+### Opt out of the module configuring the agent - *Linux Only*
+
+> **Note** The windows agent can only be configured at install time. The Linux agent ships with `falconctl` that allows puppet to configure the agent after install. For example: updating the `cid` property in your resource will update the `cid` on the linux agent on the next run, but not the windows.
+
 ``` puppet
 class {'falcon':
   config_manage => false
@@ -266,6 +276,7 @@ class {'falcon':
   client_id      => Sensitive('12346'),
   client_secret  => Sensitive('12345'),
   update_policy  => 'platform_default'
+  cid            => 'AJKQUI123JFKSDFJK`
   # ... other required params
 }
 ```
