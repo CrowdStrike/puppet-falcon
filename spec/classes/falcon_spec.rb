@@ -79,7 +79,7 @@ describe 'falcon' do
       if os_facts[:kernel] == 'windows'
         let(:params) do
           super().merge(
-              cid: cid
+              cid: cid,
             )
         end
       end
@@ -96,7 +96,7 @@ describe 'falcon' do
       describe 'falcon::install' do
         let(:params) do
           super().merge(
-              cid: cid
+              cid: cid,
             )
         end
 
@@ -106,7 +106,7 @@ describe 'falcon' do
 
           let(:params) do
             super().merge(
-                install_method: 'local', 
+                install_method: 'local',
                 package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name },
               )
           end
@@ -129,16 +129,17 @@ describe 'falcon' do
 
               context 'when provisioning_token is provided' do
                 let(:params) do
-                  super().merge(provisioning_token: provisioning_token,)
+                  super().merge(provisioning_token: provisioning_token)
                 end
-                let(:options)  { default_windows_install_options + ["ProvToken=#{provisioning_token}"] }
+                let(:options) { default_windows_install_options + ["ProvToken=#{provisioning_token}"] }
+
                 it { is_expected.to contain_package('falcon').with_install_options(options) }
               end
 
               context 'allow install_options to be overridden' do
                 let(:params) do
                   super().merge(
-                      package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name, 'install_options' => ['test']},
+                      package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name, 'install_options' => ['test'] },
                     )
                 end
 
@@ -170,16 +171,17 @@ describe 'falcon' do
 
               context 'when provisioning_token is provided' do
                 let(:params) do
-                  super().merge(provisioning_token: provisioning_token,)
+                  super().merge(provisioning_token: provisioning_token)
                 end
-                let(:options)  { default_windows_install_options + ["ProvToken=#{provisioning_token}"] }
+                let(:options) { default_windows_install_options + ["ProvToken=#{provisioning_token}"] }
+
                 it { is_expected.to contain_package('falcon').with_install_options(options) }
               end
 
               context 'allow install_options to be overridden' do
                 let(:params) do
                   super().merge(
-                      package_options: {'install_options' => ['test']},
+                      package_options: { 'install_options' => ['test'] },
                     )
                 end
 
@@ -190,7 +192,7 @@ describe 'falcon' do
                 let(:params) do
                   super().merge(cid: :undef)
                 end
-              
+
                 it { is_expected.to compile.and_raise_error(%r{CID is required to install the Falcon Sensor on Windows}) }
               end
             end
@@ -282,9 +284,7 @@ describe 'falcon' do
       end
 
       describe 'falcon::config' do
-
         if os_facts[:kernel] != 'windows'
-          
           it { is_expected.to contain_falconctl('falcon').with_cid(nil) }
           it { is_expected.to contain_falconctl('falcon').with_provisioning_token(nil) }
 

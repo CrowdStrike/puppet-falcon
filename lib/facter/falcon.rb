@@ -1,15 +1,14 @@
 Facter.add(:falcon, type: :aggregate) do
   chunk(:version) do
-
     kernel = Facter.value('kernel')
 
-    if kernel == 'Linux'
-      pkg_name = 'falcon-sensor'
-    elsif kernel == 'windows'
-      pkg_name = 'CrowdStrike Windows Sensor'
-    else
-      pkg_name = 'falcon'
-    end
+    pkg_name = if kernel == 'Linux'
+                 'falcon-sensor'
+               elsif kernel == 'windows'
+                 'CrowdStrike Windows Sensor'
+               else
+                 'falcon'
+               end
 
     pkg_ensure = Puppet::Resource.indirection.find("package/#{pkg_name}").to_hash[:ensure]
 

@@ -17,11 +17,11 @@ Puppet::Type.type(:sensor_download).provide(:default) do
   end
 
   def exists?
-    if Facter.value('falcon').nil?
-      falcon_version = :absent
-    else
-      falcon_version = Facter.value('falcon').fetch('version', :absent)
-    end
+    falcon_version = if Facter.value('falcon').nil?
+                       :absent
+                     else
+                       Facter.value('falcon').fetch('version', :absent)
+                     end
 
     installed = [:absent, :purged, :undef, nil].include?(falcon_version) ? false : true
 
