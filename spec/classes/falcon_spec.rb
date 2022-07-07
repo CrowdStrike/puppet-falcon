@@ -309,7 +309,7 @@ describe 'falcon' do
 
         if os_facts[:kernel] == 'windows'
           context 'on windows' do
-            it { is_expected.not_to contain_falconctl('falcon')}
+            it { is_expected.not_to contain_falconctl('falcon') }
           end
         end
       end
