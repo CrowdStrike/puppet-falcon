@@ -4,7 +4,7 @@
 # @api private
 #
 class falcon::config {
-  if $falcon::config_manage {
+  if $falcon::config_manage and $facts['kernel'] == 'Linux' {
     falconctl { 'falcon':
       cid                => $falcon::cid,
       provisioning_token => $falcon::provisioning_token,
