@@ -18,7 +18,7 @@ describe 'falcon' do
   let(:service_name) do
     case facts[:kernel]
     when 'windows'
-      'Falcon Sensor'
+      'CSFalconService'
     when 'Darwin'
       'falcon'
     else
@@ -304,6 +304,12 @@ describe 'falcon' do
             let(:params) { super().merge('config_manage' => false) }
 
             it { is_expected.not_to contain_falconctl('falcon') }
+          end
+        end
+
+        if os_facts[:kernel] == 'windows'
+          context 'on windows' do
+            it { is_expected.not_to contain_falconctl('falcon')}
           end
         end
       end
