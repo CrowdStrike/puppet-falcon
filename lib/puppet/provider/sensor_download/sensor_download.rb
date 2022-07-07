@@ -17,7 +17,7 @@ Puppet::Type.type(:sensor_download).provide(:default) do
   end
 
   def exists?
-    falcon_version = Facter.value('falcon')&.fetch('version') || :absent
+    falcon_version = Facter.value('falcon')&.fetch('version', :absent)
 
     installed = [:absent, :purged, :undef, nil].include?(falcon_version) ? false : true
 
