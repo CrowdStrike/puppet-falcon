@@ -48,7 +48,7 @@ def os_version(scope, os_name)
   end
 
   if os_name.casecmp('Ubuntu').zero?
-    return "*#{os_release_major}*"
+    return "*#{os_release_major.split('.')[0]}*"
   end
 
   if os_name.casecmp('Amazon Linux').zero? && scope['facts']['architecture'].casecmp('arm64').zero?
