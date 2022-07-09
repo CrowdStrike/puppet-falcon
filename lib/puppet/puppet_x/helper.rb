@@ -33,23 +33,23 @@ end
 
 # Returns the version of the os in the format expected by the falcon api
 def os_version(scope, os_name)
+  os_release_major = scope['facts']['os']['release']['major']
+
   if os_name.casecmp('macOS').zero? || os_name.casecmp('windows').zero?
     return nil
   end
 
   if os_name.casecmp('RHEL/CentOS/Oracle').zero?
-    return scope['facts']['os']['release']['major']
+    return os_release_major
   end
 
   if os_name.casecmp('Debian').zero?
-    return '9/10/11'
+    return "*#{os_release_major}*"
   end
 
   if os_name.casecmp('Ubuntu').zero?
-    return '16/18/20'
+    return "*#{os_release_major.split('.')[0]}*"
   end
-
-  os_release_major = scope['facts']['os']['release']['major']
 
   if os_name.casecmp('Amazon Linux').zero? && scope['facts']['architecture'].casecmp('arm64').zero?
     os_release_major + ' - arm64'
