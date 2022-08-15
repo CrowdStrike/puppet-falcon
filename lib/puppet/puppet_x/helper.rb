@@ -39,6 +39,10 @@ def os_version(scope, os_name)
     return nil
   end
 
+  if os_name.casecmp('Debian').zero?
+    return "*#{os_release_major}*"
+  end
+
   if os_name.casecmp('Ubuntu').zero?
     return "*#{os_release_major.split('.')[0]}*"
   end
