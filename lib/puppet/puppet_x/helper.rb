@@ -47,7 +47,7 @@ def os_version(scope, os_name)
     os_release_major + ' - arm64'
   end
 
-  os_release_major
+  "*#{os_release_major}*"
 end
 
 # Return the OS name in the format expected by the falcon api
