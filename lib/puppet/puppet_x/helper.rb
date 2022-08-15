@@ -39,14 +39,6 @@ def os_version(scope, os_name)
     return nil
   end
 
-  if os_name.casecmp('RHEL/CentOS/Oracle').zero?
-    return os_release_major
-  end
-
-  if os_name.casecmp('Debian').zero?
-    return "*#{os_release_major}*"
-  end
-
   if os_name.casecmp('Ubuntu').zero?
     return "*#{os_release_major.split('.')[0]}*"
   end
@@ -55,7 +47,7 @@ def os_version(scope, os_name)
     os_release_major + ' - arm64'
   end
 
-  os_release_major
+  "*#{os_release_major}*"
 end
 
 # Return the OS name in the format expected by the falcon api
@@ -72,12 +64,6 @@ def os_name(scope, platform_name)
 
   if fact_os_name.casecmp('Amazon').zero?
     return 'Amazon Linux'
-  end
-
-  rhel_base = ['RedHat', 'CentOS', 'OracleLinux', 'Scientific', 'Rocky', 'AlmaLinux']
-
-  if rhel_base.any? { |base| fact_os_name.casecmp(base).zero? }
-    return 'RHEL/CentOS/Oracle'
   end
 
   fact_os_name
