@@ -39,10 +39,6 @@ def os_version(scope, os_name)
     return nil
   end
 
-  if os_name.casecmp('RHEL/CentOS/Oracle').zero?
-    return os_release_major
-  end
-
   if os_name.casecmp('Debian').zero?
     return "*#{os_release_major}*"
   end
@@ -51,7 +47,7 @@ def os_version(scope, os_name)
     return "*#{os_release_major.split('.')[0]}*"
   end
 
-  if os_name.casecmp('Amazon Linux').zero? && scope['facts']['architecture'].casecmp('arm64').zero?
+  if scope['facts']['architecture'].casecmp('arm64').zero?
     os_release_major + ' - arm64'
   end
 
@@ -77,7 +73,7 @@ def os_name(scope, platform_name)
   rhel_base = ['RedHat', 'CentOS', 'OracleLinux', 'Scientific', 'Rocky', 'AlmaLinux']
 
   if rhel_base.any? { |base| fact_os_name.casecmp(base).zero? }
-    return 'RHEL/CentOS/Oracle'
+    return '*RHEL*'
   end
 
   fact_os_name
