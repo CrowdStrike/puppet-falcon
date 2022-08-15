@@ -66,5 +66,17 @@ def os_name(scope, platform_name)
     return 'Amazon Linux'
   end
 
-  "*#{fact_os_name}*"
+  if ['RedHat', 'Scientific', 'Rocky', 'AlmaLinux'].any? { |base| fact_os_name.casecmp(base).zero? }
+    return '*RHEL*'
+  end
+
+  if fact_os_name.casecmp('OracleLinux').zero?
+    return '*Oracle*'
+  end
+
+  if fact_os_name.casecmp('CentOS').zero?
+    return '*CentOS*'
+  end
+
+  fact_os_name
 end
