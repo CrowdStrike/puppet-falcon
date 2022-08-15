@@ -43,11 +43,11 @@ def os_version(scope, os_name)
     return "*#{os_release_major.split('.')[0]}*"
   end
 
-  if os_name.casecmp('Amazon Linux').zero? && scope['facts']['architecture'].casecmp('arm64').zero?
+  if scope['facts']['architecture'].casecmp('arm64').zero?
     os_release_major + ' - arm64'
   end
 
-  "*#{os_release_major}*"
+  os_release_major
 end
 
 # Return the OS name in the format expected by the falcon api
