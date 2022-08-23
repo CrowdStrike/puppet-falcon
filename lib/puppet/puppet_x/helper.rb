@@ -4,11 +4,19 @@ require 'json'
 require 'cgi'
 
 # Build the query string used to filter sensor installers
-def build_sensor_installer_query(platform_name:, os_name: nil, version: nil, os_version: nil)
+def build_sensor_installer_query(platform_name:, os_name: nil, version: nil, os_version: nil, architecture: nil)
   query = "platform:'#{platform_name.downcase}'"
 
   unless os_version.nil?
     query += "+os_version:'#{os_version}'"
+  end
+
+  unless architecture.nil?
+    query += if architecture.casecmp('arm64').zero?
+               "+os_version:~'arm64'"
+             else
+               "+os_version:!~'arm64'"
+             end
   end
 
   unless version.nil?
@@ -45,10 +53,6 @@ def os_version(scope, os_name)
 
   if os_name.casecmp('Ubuntu').zero?
     return "*#{os_release_major.split('.')[0]}*"
-  end
-
-  if scope['facts']['architecture'].casecmp('arm64').zero?
-    os_release_major + ' - arm64'
   end
 
   os_release_major
