@@ -1,4 +1,5 @@
 # falcon
+
 ## Table of Contents
 
 1. [Description](#description)
@@ -24,7 +25,7 @@ Below are some of the common use cases.
 
 ### Basic Install, Configure, and Manage the service
 
-``` puppet
+```puppet
 # using the `api` method
 
 class {'falcon':
@@ -35,7 +36,7 @@ class {'falcon':
 }
 ```
 
-``` puppet
+```puppet
 # using the `local` method
 
 $package_options = {
@@ -44,7 +45,7 @@ $package_options = {
   # any other attributes that are valid for the package resource
 }
 
-class {'falcon': 
+class {'falcon':
   install_method  => 'local',
   package_options => $package_options,
   cid             => 'AJKQUI123JFKSDFJK`
@@ -55,22 +56,22 @@ class {'falcon':
 
 ### Using the `api` install method
 
-The  `api` install methods uses the API to download the sensor package. The version of the package that is downloaded are determined by the parameters passed to the module.
+The `api` install methods uses the API to download the sensor package. The version of the package that is downloaded are determined by the parameters passed to the module.
 
 There are three parameters that alter the behavior of the `api` install method. Only one of these parameters can be used at a time, and they are evaluated in the order they are listed below.
 
-  - `version` -  Will download the sensor package matching the version you specify.
-  - `update_policy` - Will download the version specified by the update policy.
-  - `version_decrement` - Will download the `n`th version before the current version.
+- `version` - Will download the sensor package matching the version you specify.
+- `update_policy` - Will download the version specified by the update policy.
+- `version_decrement` - Will download the `n`th version before the current version.
 
 The drawbacks to using the `api` install method are outlined in [API vs Local install methods](#api-vs-local-install-methods).
 
 Examples for each are below.
 **Using the `version` parameter**
-  
+
 This takes precedence over `update_policy` and `version_decrement`.
 
-``` puppet
+```puppet
 class { 'falcon':
   client_id     => Sensitive('12346'),
   client_secret => Sensitive('12345'),
@@ -83,7 +84,7 @@ class { 'falcon':
 
 This takes precedence over the `version_decrement` parameter.
 
-``` puppet
+```puppet
 class { 'falcon':
   client_id     => Sensitive('12346'),
   client_secret => Sensitive('12345'),
@@ -94,11 +95,11 @@ class { 'falcon':
 
 **Using the `version_decrement` parameter**
 
-Use `version_decrement` to download the `n-x` version. 
+Use `version_decrement` to download the `n-x` version.
 
 A value of `0` will download the latest version, and a value of `2` will download the `n-2` version (`2` releases behind latest).
 
-``` puppet
+```puppet
 class { 'falcon':
   client_id         => Sensitive('12346'),
   client_secret     => Sensitive('12345'),
@@ -108,20 +109,21 @@ class { 'falcon':
 ```
 
 ---
+
 ### Using the `local` install method
 
-The `local` install method gives you full control on how the sensor is installed. 
+The `local` install method gives you full control on how the sensor is installed.
 
 Some reasons you may use this method are:
-  - You want to install the sensor from a local file
-  - You have your own package management system
+
+- You want to install the sensor from a local file
+- You have your own package management system
 
 You can learn more about the `local` install method in [API vs Local install methods](#api-vs-local-install-methods).
 
 When you use the `local` install method, `package_options` is required. Parameters in `package_options` are passed to the the `package` resource. You must provide any required parameters for the `package` resource except the `name` parameter. The module will pick the appropriate name based on the operating system. You can still override the name by specifying the `name` property in the `package_options` hash.
 
-
-``` puppet
+```puppet
 # Using a local file
 
 file {'/tmp/sensor.rpm':
@@ -139,7 +141,7 @@ class {'falcon':
 }
 ```
 
-``` puppet
+```puppet
 # Using a http source
 
 class {'falcon':
@@ -151,7 +153,7 @@ class {'falcon':
 }
 ```
 
-``` puppet
+```puppet
 # Overriding the name parameter
 
 class {'falcon':
@@ -170,7 +172,7 @@ class {'falcon':
 
 When `install_method` is `api` you can use the `cleanup_installer` parameter to remove the installer file after installation.
 
-``` puppet
+```puppet
 class { 'falcon':
   client_id         => Sensitive('12346'),
   client_secret     => Sensitive('12345'),
@@ -187,7 +189,7 @@ You can override any parameter that is passed to the `package` resource using th
 
 This works the same in both `api` and `local` install methods.
 
-``` puppet
+```puppet
 $package_options = {
   'provider' => 'rpm',
   'install_options' => '--force',
@@ -201,7 +203,8 @@ class { 'falcon':
 ---
 
 ### Opt out of the module installing the package
-``` puppet
+
+```puppet
 class {'falcon':
   package_manage => false
   # ... other required params
@@ -210,11 +213,11 @@ class {'falcon':
 
 ---
 
-### Opt out of the module configuring the agent - *Linux Only*
+### Opt out of the module configuring the agent - _Linux Only_
 
 > **Note** The windows agent can only be configured at install time. The Linux agent ships with `falconctl` that allows puppet to configure the agent after install. For example: updating the `cid` property in your resource will update the `cid` on the linux agent on the next run, but not the windows.
 
-``` puppet
+```puppet
 class {'falcon':
   config_manage => false
   # ... other required params
@@ -224,7 +227,8 @@ class {'falcon':
 ---
 
 ### Opt out of the module controlling the service
-``` puppet
+
+```puppet
 class {'falcon':
   service_manage => false
   # ... other required params
@@ -235,7 +239,7 @@ class {'falcon':
 
 ### Registering a `cid`
 
-``` puppet
+```puppet
 class {'falcon':
   cid => 'AJKQUI123JFKSDFJK`
   # ... other required params
@@ -248,7 +252,7 @@ class {'falcon':
 
 If your company requires a provisioning token to register a agent, you can use the `provisioning_token` parameter.
 
-``` puppet
+```puppet
 class {'falcon':
   cid                => 'AJKQUI123JFKSDFJK`
   provisioning_token => '1234567890'
@@ -257,7 +261,6 @@ class {'falcon':
 ```
 
 ---
-
 
 ### Pinning the agent version
 
@@ -269,8 +272,7 @@ Each subsequent run it will check the api to see if the version returned is the 
 
 > **warning**: This causes the module to consult the API every run to ensure the version the API returns is the version that is installed. This could cause rate limit issues for large deployments. If you want to have automated upgrades/downgrades and use the `api` install method it is generally suggested to set `version_manage` to `false` and allow the CrowdStrike Update Policy to do the upgrades/downgrades instead of Puppet.
 
-
-``` puppet
+```puppet
 class {'falcon':
   version_manage => true
   client_id      => Sensitive('12346'),
@@ -283,7 +285,7 @@ class {'falcon':
 
 Using the `install_method` of `local`
 
-``` puppet
+```puppet
 class {'falcon':
   install_method => 'local',
   package_options => {
@@ -294,6 +296,7 @@ class {'falcon':
 ```
 
 ---
+
 ## `api` vs `local` install methods
 
 Generally the `api` method will be fine for most use cases if `version_manage` is set to `false`. If `version_manage` is set to `true` you may run into api rate limits.
@@ -314,7 +317,6 @@ However, this method might not be suitable for everyone so the `local` install m
 
 ### How the `api` install method works
 
-
 The api install method will use the falcon api to download the correct package version. The correct package version depends on what parameters you provide. You can see [Examples of each here](#using-the-api-install-method).
 
 The first run will cause Puppet to call the appropriate CrowdStrike apis to get the information needed to download the sensor package. It will then download the sensor package. After that, normal puppet resources take over.
@@ -334,9 +336,16 @@ Each time Puppet compiles a catalog for a node it uses the API to determine what
 Setting `version_manage` to `false` will prevent any api calls unless the agent is not installed.
 
 ---
+
 ### Reducing API calls
 
 The best way to reduce API calls is to set `version_manage` to `false`. This will ensure the only time the API is called is when the agent is not installed. This should prevent API rate limit issues.
+
+---
+
+## Installing on MacOS
+
+Apple platforms require a Mobile Device Management (MDM) profile to install kernel extensions without user prompting. Because of this limitation, this module will only download and install the Falcon Sensor. The Mac deployment guide in the CrowdStrike documentation outlines the steps required to configure the Mac sensor to start reporting to a `CID`.
 
 ## Development
 
@@ -345,5 +354,3 @@ If you want to develop new content or improve on this collection, please open an
 ## License
 
 See the [LICENSE](LICENSE) for more information.
-
-
