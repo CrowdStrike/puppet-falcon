@@ -2,7 +2,24 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [v0.2.1](https://github.com/crowdstrike/puppet-falcon/tree/v0.2.1) (2022-07-09)
+## [v0.3.0](https://github.com/crowdstrike/puppet-falcon/tree/v0.3.0) (2022-08-23)
+
+[Full Changelog](https://github.com/crowdstrike/puppet-falcon/compare/v0.2.1...v0.3.0)
+
+### Added
+
+- Add mac install support [\#35](https://github.com/CrowdStrike/puppet-falcon/pull/35) ([ffalor](https://github.com/ffalor))
+- add arm64 support [\#33](https://github.com/CrowdStrike/puppet-falcon/pull/33) ([ffalor](https://github.com/ffalor))
+
+### Fixed
+
+- Fix incorrect arm64 assumptions [\#36](https://github.com/CrowdStrike/puppet-falcon/pull/36) ([ffalor](https://github.com/ffalor))
+
+### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
+
+- add more images [\#34](https://github.com/CrowdStrike/puppet-falcon/pull/34) ([ffalor](https://github.com/ffalor))
+
+## [v0.2.1](https://github.com/crowdstrike/puppet-falcon/tree/v0.2.1) (2022-07-10)
 
 [Full Changelog](https://github.com/crowdstrike/puppet-falcon/compare/v0.2.0...v0.2.1)
 
