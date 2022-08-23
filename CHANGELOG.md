@@ -15,10 +15,6 @@ All notable changes to this project will be documented in this file. The format 
 
 - Fix incorrect arm64 assumptions [\#36](https://github.com/CrowdStrike/puppet-falcon/pull/36) ([ffalor](https://github.com/ffalor))
 
-### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
-
-- add more images [\#34](https://github.com/CrowdStrike/puppet-falcon/pull/34) ([ffalor](https://github.com/ffalor))
-
 ## [v0.2.1](https://github.com/crowdstrike/puppet-falcon/tree/v0.2.1) (2022-07-10)
 
 [Full Changelog](https://github.com/crowdstrike/puppet-falcon/compare/v0.2.0...v0.2.1)
