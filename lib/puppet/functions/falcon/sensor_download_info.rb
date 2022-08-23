@@ -35,23 +35,24 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
     platform_name = platform(scope)
     os_name = os_name(scope, platform_name)
     os_version = os_version(scope, os_name)
+    architecture = scope['facts']['architecture']
 
     falcon_api = FalconApi.new(falcon_cloud: options['falcon_cloud'], client_id: client_id, client_secret: client_secret)
     falcon_api.platform_name = platform_name
 
     # If version is provied, use it to get the sensor package info
     if options.key?('version') && !options['version'].nil?
-      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name, os_version: os_version)
+      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name, os_version: os_version, architecture: architecture)
       installer = falcon_api.falcon_installers(query)[0]
     # If update_policy is provided, use it to get the sensor package info
     elsif options.key?('update_policy') && !options['update_policy'].nil?
       falcon_api.update_policy = options['update_policy']
       version = falcon_api.version_from_update_policy
-      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name, os_version: os_version)
+      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name, os_version: os_version, architecture: architecture)
       installer = falcon_api.falcon_installers(query)[0]
     # If neither are provided, use the `version_decrement` to pull the n-x version for the platform and os`
     else
-      query = build_sensor_installer_query(platform_name: platform_name, os_name: os_name, os_version: os_version)
+      query = build_sensor_installer_query(platform_name: platform_name, os_name: os_name, os_version: os_version, architecture: architecture)
       version_decrement = options['version_decrement']
       installers = falcon_api.falcon_installers(query)
 
