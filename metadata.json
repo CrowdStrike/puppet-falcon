@@ -7,10 +7,14 @@
   "source": "https://github.com/crowdstrike/puppet-falcon",
   "project_page": "https://github.com/crowdstrike/puppet-falcon",
   "issues_url": "https://github.com/crowdstrike/puppet-falcon/issues",
-  "dependencies": [
-
-  ],
+  "dependencies": [],
   "operatingsystem_support": [
+    {
+      "operatingsystem": "OSX",
+      "operatingsystemrelease": [
+        "12"
+      ]
+    },
     {
       "operatingsystem": "Amazon",
       "operatingsystemrelease": [

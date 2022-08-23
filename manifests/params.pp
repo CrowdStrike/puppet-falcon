@@ -39,7 +39,7 @@ class falcon::params {
   $service_enable = true
   $service_name = $facts['kernel'] ? {
     'Linux' => 'falcon-sensor',
-    'Darwin' => 'falcon-sensor',
+    'Darwin' => 'com.crowdstrike.falcon.UserAgent',
     'windows' => 'CSFalconService',
   }
 }

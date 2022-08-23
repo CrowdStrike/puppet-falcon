@@ -4,7 +4,7 @@
 # @api private
 #
 class falcon::service inherits falcon::params {
-  if $falcon::service_manage {
+  if $falcon::service_manage and $facts['kernel'] != 'Darwin' {
     service { 'falcon':
       ensure => $falcon::service_ensure,
       name   => $falcon::service_name,
