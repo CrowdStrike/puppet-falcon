@@ -18,16 +18,15 @@ Puppet::Type.type(:sensor_download).provide(:default) do
 
   def exists?
     falcon_fact = Facter.value('falcon')
-    Puppet.debug("falcon fact: #{falcon_fact}")
-    # falcon_version = Facter.value('falcon')&.fetch('version', :absent)
-    falcon_version = falcon_fact&.fetch('version', :absent)
+    Puppet.debug("Falcon fact: #{falcon_fact}")
+    falcon_version = falcon_fact&.fetch(:version, :absent)
 
     installed = [:absent, :purged, :undef, nil].include?(falcon_version) ? false : true
 
     Puppet.debug("version_manage is #{@resource[:version_manage]}")
     Puppet.debug("falcon_version fact returns #{falcon_version}")
     Puppet.debug("Falcon is installed check returns #{installed}")
-    Puppet.debug("target falcon version is #{@resource[:version]}")
+    Puppet.debug("Desired falcon version is #{@resource[:version]}")
 
     # If version_manage is true check if the installed version is equal to the required version
     if @resource[:version_manage]
