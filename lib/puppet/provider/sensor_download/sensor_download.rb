@@ -17,17 +17,21 @@ Puppet::Type.type(:sensor_download).provide(:default) do
   end
 
   def exists?
-    falcon_version = Facter.value('falcon')&.fetch('version', :absent)
+    falcon_fact = Facter.value('falcon')
+    Puppet.debug("falcon fact: #{falcon_fact}")
+    # falcon_version = Facter.value('falcon')&.fetch('version', :absent)
+    falcon_version = falcon_fact&.fetch('version', :absent)
 
     installed = [:absent, :purged, :undef, nil].include?(falcon_version) ? false : true
 
     Puppet.debug("version_manage is #{@resource[:version_manage]}")
     Puppet.debug("falcon_version fact returns #{falcon_version}")
     Puppet.debug("Falcon is installed check returns #{installed}")
+    Puppet.debug("target falcon version is #{@resource[:version]}")
 
     # If version_manage is true check if the installed version is equal to the required version
     if @resource[:version_manage]
-      insync = @resource[:version] == Facter.value('falcon_version')
+      insync = @resource[:version] == falcon_version
       Puppet.debug("Desired version is equal to installed version: #{insync}")
       return insync
     end
