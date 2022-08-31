@@ -70,7 +70,7 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
     # 6.25.0-1302 so the below regex is used to make this change.
     # TODO: Check if macos and windows package version needs the same fix
     version = version.gsub(%r{\.(\d+)\.(\d+)}, '.\1.0-\2')
-    version += ".el#{os_version}" if os_name.casecmp('RHEL/CentOS/Oracle').zero?
+    version += ".el#{os_version}" if os_name.casecmp('*RHEL*').zero?
     version += ".amzn#{os_version}" if os_name.casecmp('Amazon Linux').zero?
 
     {
