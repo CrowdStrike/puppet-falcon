@@ -116,11 +116,24 @@
 #
 #  Ignored if `service_manage` is set to `false`.
 #
+# @param proxy_host
+#  The proxy host for the falcon agent to use. Defaults to `undef`.
+#
+# @param proxy_port
+#  The proxy port for the falcon agent to use. Defaults to `undef`.
+#
+# @param proxy_enabled
+#  Whether proxy is enabled. Defaults to `undef`.
+#
 class falcon (
   # falcon::config
   Optional[String] $cid                          = $falcon::params::cid,
   Optional[Boolean] $config_manage               = $falcon::params::config_manage,
   Optional[String] $provisioning_token           = $falcon::params::provisioning_token,
+
+  Optional[String] $proxy_host                   = $falcon::params::proxy_host,
+  Optional[Numeric] $proxy_port                  = $falcon::params::proxy_port,
+  Optional[Boolean] $proxy_enabled               = $falcon::params::proxy_enabled,
 
   # falcon::install
   String $falcon_cloud                           = $falcon::params::falcon_cloud,

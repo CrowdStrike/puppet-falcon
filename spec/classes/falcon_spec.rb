@@ -5,6 +5,9 @@ require 'spec_helper'
 describe 'falcon' do
   let(:cid) { 'AKDLKJFSDLFJ123KJ1L3' }
   let(:provisioning_token) { 'AKLDFJDSF12312IOJFLKSAF' }
+  let(:proxy_host) { 'proxy.example.com' }
+  let(:proxy_port) { 8080 }
+  let(:proxy_enabled) { true }
 
   let(:default_windows_install_options) { ['/install', '/quiet', '/norestart', "CID=#{cid}"] }
 
@@ -287,6 +290,9 @@ describe 'falcon' do
         if os_facts[:kernel] != 'windows'
           it { is_expected.to contain_falconctl('falcon').with_cid(nil) }
           it { is_expected.to contain_falconctl('falcon').with_provisioning_token(nil) }
+          it { is_expected.to contain_falconctl('falcon').with_proxy_host(nil) }
+          it { is_expected.to contain_falconctl('falcon').with_proxy_port(nil) }
+          it { is_expected.to contain_falconctl('falcon').with_proxy_enabled(nil) }
 
           context 'with cid' do
             let(:params) { super().merge('cid' => cid) }
@@ -298,6 +304,24 @@ describe 'falcon' do
             let(:params) { super().merge('provisioning_token' => provisioning_token) }
 
             it { is_expected.to contain_falconctl('falcon').with_provisioning_token(provisioning_token) }
+          end
+
+          context 'with proxy_host' do
+            let(:params) { super().merge('proxy_host' => proxy_host) }
+
+            it { is_expected.to contain_falconctl('falcon').with_proxy_host(proxy_host) }
+          end
+
+          context 'with proxy_port' do
+            let(:params) { super().merge('proxy_port' => proxy_port) }
+
+            it { is_expected.to contain_falconctl('falcon').with_proxy_port(proxy_port) }
+          end
+
+          context 'with proxy_enabled' do
+            let(:params) { super().merge('proxy_enabled' => proxy_enabled) }
+
+            it { is_expected.to contain_falconctl('falcon').with_proxy_enabled(proxy_enabled) }
           end
 
           context 'when config_manage is false' do

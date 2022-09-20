@@ -64,10 +64,18 @@ class falcon::install {
       unless $falcon::cid {
         fail('CID is required to install the Falcon Sensor on Windows')
       }
-      $_package_options = empty($falcon::provisioning_token) ? {
-        false   => {'install_options' => ['/install', '/quiet', '/norestart', "CID=${falcon::cid}", "ProvToken=${falcon::provisioning_token}"] } + $package_options, # lint:ignore:140chars
-        default => {'install_options' => ['/install', '/quiet', '/norestart', "CID=${falcon::cid}"] } + $package_options,
+
+      $install_args = {
+        'CID' => $falcon::cid,
+        'ProvToken' => $falcon::provisioning_token,
+        'APP_PROXYNAME' => $falcon::proxy_host,
+        'APP_PROXYPORT' => $falcon::proxy_port,
+        'PROXYDISABLE' => $falcon::proxy_enabled,
       }
+
+      $_package_options = {
+        'install_options' => ['/install', '/quiet', '/norestart'] + falcon::win_install_options($install_args)
+        } + $package_options
     } else {
       $_package_options = $package_options
     }

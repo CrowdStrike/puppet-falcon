@@ -13,4 +13,17 @@ Puppet::Type.newtype(:falconctl) do
   newproperty(:cid) do
     desc 'The cid to set for the Falcon Sensor'
   end
+
+  newproperty(:proxy_host) do
+    desc 'The proxy host to set for the Falcon Sensor'
+  end
+
+  newproperty(:proxy_port) do
+    desc 'The proxy port to set for the Falcon Sensor'
+  end
+
+  newproperty(:proxy_enabled) do
+    desc 'Enable or disable the proxy for the Falcon Sensor'
+    newvalues(:true, :false)
+  end
 end

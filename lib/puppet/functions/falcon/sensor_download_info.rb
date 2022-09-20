@@ -22,6 +22,8 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
   # @example Calling the function
   #   falcon::sensor_download_info('client_id', 'client_secret', { 'falcon_cloud' => 'api.crowdstrike.com'})
   #
+  # @api private
+  #
   dispatch :sensor_download_info do
     param 'Sensitive', :client_id
     param 'Sensitive', :client_secret

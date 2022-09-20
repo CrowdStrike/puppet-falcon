@@ -8,6 +8,9 @@ class falcon::config {
     falconctl { 'falcon':
       cid                => $falcon::cid,
       provisioning_token => $falcon::provisioning_token,
+      proxy_host         => $falcon::proxy_host,
+      proxy_port         => $falcon::proxy_port,
+      proxy_enabled      => $falcon::proxy_enabled,
     }
   }
 }

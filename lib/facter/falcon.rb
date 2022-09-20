@@ -1,15 +1,16 @@
+# rubocop:disable Style/RedundantBegin
 Facter.add(:falcon, type: :aggregate) do
   chunk(:version) do
     begin
       kernel = Facter.value('kernel')
 
       pkg_name = if kernel == 'Linux'
-                  'falcon-sensor'
-                elsif kernel == 'windows'
-                  'CrowdStrike Windows Sensor'
-                else
-                  'falcon'
-                end
+                   'falcon-sensor'
+                 elsif kernel == 'windows'
+                   'CrowdStrike Windows Sensor'
+                 else
+                   'falcon'
+                 end
 
       pkg_ensure = Puppet::Resource.indirection.find("package/#{pkg_name}").to_hash[:ensure]
 
