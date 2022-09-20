@@ -24,7 +24,13 @@
 
 ### Functions
 
-* [`falcon::sensor_download_info`](#falconsensor_download_info): Get sensor info like install package SHA and version
+#### Public Functions
+
+
+#### Private Functions
+
+* `falcon::sensor_download_info`: Get sensor info like install package SHA and version
+* `falcon::win_install_options`: Helper function to generate install options for falcon on windows machines
 
 ## Classes
 
@@ -70,6 +76,9 @@ The following parameters are available in the `falcon` class:
 * [`service_enable`](#service_enable)
 * [`service_name`](#service_name)
 * [`service_ensure`](#service_ensure)
+* [`proxy_host`](#proxy_host)
+* [`proxy_port`](#proxy_port)
+* [`proxy_enabled`](#proxy_enabled)
 
 ##### <a name="package_manage"></a>`package_manage`
 
@@ -278,6 +287,30 @@ Ignored if `service_manage` is set to `false`.
 
 Default value: `$falcon::params::service_ensure`
 
+##### <a name="proxy_host"></a>`proxy_host`
+
+Data type: `Optional[String]`
+
+The proxy host for the falcon agent to use. Defaults to `undef`.
+
+Default value: `$falcon::params::proxy_host`
+
+##### <a name="proxy_port"></a>`proxy_port`
+
+Data type: `Optional[Numeric]`
+
+The proxy port for the falcon agent to use. Defaults to `undef`.
+
+Default value: `$falcon::params::proxy_port`
+
+##### <a name="proxy_enabled"></a>`proxy_enabled`
+
+Data type: `Optional[Boolean]`
+
+Whether proxy is enabled. Defaults to `undef`.
+
+Default value: `$falcon::params::proxy_enabled`
+
 ## Resource types
 
 ### <a name="falconctl"></a>`falconctl`
@@ -291,6 +324,20 @@ The following properties are available in the `falconctl` type.
 ##### `cid`
 
 The cid to set for the Falcon Sensor
+
+##### `proxy_enabled`
+
+Valid values: ``true``, ``false``
+
+Enable or disable the proxy for the Falcon Sensor
+
+##### `proxy_host`
+
+The proxy host to set for the Falcon Sensor
+
+##### `proxy_port`
+
+The proxy port to set for the Falcon Sensor
 
 #### Parameters
 
@@ -378,62 +425,4 @@ If true download the required sensor package if current sensor version does not 
 download sensor package when no sensor is installed
 
 ## Functions
-
-### <a name="falconsensor_download_info"></a>`falcon::sensor_download_info`
-
-Type: Ruby 4.x API
-
-Get sensor info like install package SHA and version
-
-#### Examples
-
-##### Calling the function
-
-```puppet
-falcon::sensor_download_info('client_id', 'client_secret', { 'falcon_cloud' => 'api.crowdstrike.com'})
-```
-
-#### `falcon::sensor_download_info(Sensitive $client_id, Sensitive $client_secret, Hash $options)`
-
-Get sensor info like install package SHA and version
-
-Returns: `Hash` download information about the sensor
-
-- `sha256` the SHA256 checksum of the sensor package
-- `version` the version of the sensor package
-- `os_name` the name of the operating system the sensor is for
-- `file_path` the fully qualified file path to download the sensor package to
-- `bearer_token` the bearer token used to authenticate with the Falcon API
-- `platform_name` the name of the platform the sensor is for
-
-##### Examples
-
-###### Calling the function
-
-```puppet
-falcon::sensor_download_info('client_id', 'client_secret', { 'falcon_cloud' => 'api.crowdstrike.com'})
-```
-
-##### `client_id`
-
-Data type: `Sensitive`
-
-the client id used to authenticate with the Falcon API
-
-##### `client_secret`
-
-Data type: `Sensitive`
-
-the client secret used to authenticate with the Falcon API
-
-##### `options`
-
-Data type: `Hash`
-
-used to determine how download information is retrieved
-
-- `version` the version of the sensor to use
-- `falcon_cloud` the name of the cloud to use
-- `update_policy` the update policy to use
-- `sensor_tmp_dir` the temporary directory to use
 
