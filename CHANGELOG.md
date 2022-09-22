@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v0.4.0](https://github.com/crowdstrike/puppet-falcon/tree/v0.4.0) (2022-09-22)
+
+[Full Changelog](https://github.com/crowdstrike/puppet-falcon/compare/v0.3.1...v0.4.0)
+
+### Added
+
+- add proxy support [\#41](https://github.com/CrowdStrike/puppet-falcon/pull/41) ([ffalor](https://github.com/ffalor))
+
 ## [v0.3.1](https://github.com/crowdstrike/puppet-falcon/tree/v0.3.1) (2022-09-01)
 
 [Full Changelog](https://github.com/crowdstrike/puppet-falcon/compare/v0.3.0...v0.3.1)
