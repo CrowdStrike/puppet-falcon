@@ -254,11 +254,26 @@ If your company requires a provisioning token to register a agent, you can use t
 
 ```puppet
 class {'falcon':
-  cid                => 'AJKQUI123JFKSDFJK`
+  cid                => 'AJKQUI123JFKSDFJK`,
   provisioning_token => '1234567890'
   # ... other required params
 }
 ```
+
+### Setting proxy settings
+
+You can use the `proxy_host`, `proxy_port`, and `proxy_enabled` parameters to configure proxy settings for your agent.
+
+> **Note** Mac installs have no proxy settings specific to the agent. Instead it uses the OS's proxy settings. Passing values to these parameters won't configure any proxy settings for Mac.
+
+class {'falcon':
+  cid                => 'AJKQUI123JFKSDFJK`,
+  provisioning_token => '1234567890,'
+  proxy_host         => 'neptune.example.com',
+  proxy_port         => '8080',
+  proxy_enabled      => true
+  # ... other required params
+}
 
 ---
 

@@ -33,6 +33,10 @@ class falcon::params {
   $config_manage  = true
   $provisioning_token = undef
 
+  $proxy_host = undef
+  $proxy_port = undef
+  $proxy_enabled = undef
+
   # falcon::service
   $service_manage = true
   $service_ensure = 'running'
