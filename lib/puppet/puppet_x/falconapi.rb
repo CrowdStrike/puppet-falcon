@@ -3,6 +3,8 @@ require 'net/http'
 require 'json'
 require 'cgi'
 
+require_relative 'common'
+
 # FalconApi class to interact with the falcon api related to sensor downloads.
 class FalconApi
   attr_accessor :falcon_cloud
@@ -30,6 +32,7 @@ class FalconApi
                     end
     @client_id = client_id
     @client_secret = client_secret
+    @version = module_version
   end
 
   # Returns the version of the sensor installer for the given policy and platform name.
@@ -42,6 +45,7 @@ class FalconApi
     request = Net::HTTP::Get.new(url_path)
     request['Content-Type'] = 'application/json'
     request['Authorization'] = "Bearer #{@bearer_token.unwrap}"
+    request['User-Agent'] = "crowdstrike-puppet/#{@version}"
 
     resp = @http_client.request(request)
 
@@ -76,6 +80,7 @@ class FalconApi
     request = Net::HTTP::Get.new(url_path)
     request['Content-Type'] = 'application/json'
     request['Authorization'] = "Bearer #{@bearer_token.unwrap}"
+    request['User-Agent'] = "crowdstrike-puppet/#{@version}"
 
     resp = @http_client.request(request)
 
@@ -102,6 +107,7 @@ class FalconApi
     request = Net::HTTP::Get.new(url_path)
     request['Content-Type'] = 'application/json'
     request['Authorization'] = "Bearer #{@bearer_token}"
+    request['User-Agent'] = "crowdstrike-puppet/#{@version}"
 
     resp = @http_client.request(request)
 
@@ -152,6 +158,7 @@ class FalconApi
 
     request = Net::HTTP::Post.new(url_path)
     request['Content-Type'] = 'application/x-www-form-urlencoded'
+    request['User-Agent'] = "crowdstrike-puppet/#{@version}"
     request.body = URI.encode_www_form(req_body)
 
     resp = @http_client.request(request)
