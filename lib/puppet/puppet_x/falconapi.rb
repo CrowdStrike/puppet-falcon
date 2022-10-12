@@ -3,8 +3,6 @@ require 'net/http'
 require 'json'
 require 'cgi'
 
-require_relative 'common'
-
 # FalconApi class to interact with the falcon api related to sensor downloads.
 class FalconApi
   attr_accessor :falcon_cloud
@@ -32,7 +30,7 @@ class FalconApi
                     end
     @client_id = client_id
     @client_secret = client_secret
-    @version = module_version
+    @version = '0.5.1'
   end
 
   # Returns the version of the sensor installer for the given policy and platform name.
