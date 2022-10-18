@@ -1,6 +1,7 @@
 require_relative '../../puppet_x/common'
 
-Puppet::Type.type(:falconctl).provide(:default) do
+# rubocop:disable Style/RedundantBegin
+Puppet::Type.type(:falconctl).provide(:linux) do
   desc 'Configure the Falcon Sensor'
 
   defaultfor kernel: :Linux
@@ -114,10 +115,53 @@ Puppet::Type.type(:falconctl).provide(:default) do
   def proxy_enabled=(value)
     desired_value = !to_boolean(value.to_s)
     if desired_value
-      Puppet.debug('Disabling proxy by setting proxy disable to true')
+      Puppet.notice('Disabling proxy by setting proxy disable to true')
     else
-      Puppet.debug('Enabling proxy by setting proxy disable to false')
+      Puppet.notice('Enabling proxy by setting proxy disable to false')
     end
     falconctl_cmd('-sf', "--apd=#{desired_value}")
+  end
+
+  def tags
+    begin
+      current_tags = (falconctl_cmd '-g', '--tags').strip.split('=')[-1].chomp('.').to_s
+      current_tags = [] if %r{tags are not set}i.match?(current_tags)
+
+      current_tags = current_tags.split(',') unless current_tags.is_a?(Array)
+    rescue => exception
+      Puppet.debug("Exception Class: #{exception.class.name}")
+      raise exception unless %r{tags are not set}i.match?(exception.message)
+    end
+
+    Puppet.debug("Using #{@resource[:tag_membership]} tag membership")
+    Puppet.debug("Current tags: #{current_tags}")
+    if @resource[:tag_membership] == :minimum
+      Puppet.debug("Ensuring tags: #{@resource[:tags]} exists in current tags: #{current_tags}")
+      return @resource[:tags] if (@resource[:tags] - current_tags).empty?
+    else
+      Puppet.debug("Ensuring tags only contain: #{@resource[:tags]}")
+    end
+
+    current_tags
+  end
+
+  def tags=(value)
+    begin
+      tags = if @resource[:tag_membership] == :minimum
+               current_tags = (falconctl_cmd '-g', '--tags').strip.split('=')[-1].chomp('.').to_s
+               current_tags = [] if %r{tags are not set}i.match?(current_tags)
+               current_tags = current_tags.split(',') unless current_tags.is_a?(Array)
+               current_tags.concat(value - current_tags)
+             else
+               value
+             end
+
+      raise Puppet::Error, "Tags can not exceed 256 characters including comma delimiter. Current length: #{tags.length}" if tags.length > 256
+
+      falconctl_cmd('-sf', "--tags=#{tags.join(',')}")
+    rescue => exception
+      Puppet.debug("Exception Class: #{exception.class.name}")
+      raise Puppet::Error, "Failed to set tags: #{exception.message}"
+    end
   end
 end
