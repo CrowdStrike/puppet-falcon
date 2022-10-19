@@ -56,6 +56,11 @@ Puppet::Type.newtype(:falconctl) do
       end
       super(currentvalue, newvalue)
     end
+
+    def insync?(is)
+      return false if @resource[:tag_membership] == :inclusive && should == [] && is != []
+      super(is)
+    end
   end
 
   newparam(:tag_membership) do

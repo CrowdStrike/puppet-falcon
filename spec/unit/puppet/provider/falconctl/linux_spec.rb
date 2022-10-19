@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-ensure_module_defined('Puppet::Provider::Falconctl')
-require 'puppet/provider/falconctl/falconctl'
+ensure_module_defined('Puppet::Provider::Linux')
+require 'puppet/provider/falconctl/linux'
 
-describe 'the falconctl provider' do
-  let(:provider_class) { Puppet::Type.type(:falconctl).provider(:default) }
+describe Puppet::Type.type(:falconctl).provider(:linux) do
+  let(:provider_class) { Puppet::Type.type(:falconctl).provider(:linux) }
   let(:resource) { instance_double('resource') }
   let(:provider) { provider_class.new(resource) }
 

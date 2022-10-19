@@ -147,6 +147,7 @@ Puppet::Type.type(:falconctl).provide(:linux) do
 
   def tags=(value)
     begin
+      return falconctl_cmd '-df', '--tags' if value == [] && @resource[:tag_membership] == :inclusive
       tags = if @resource[:tag_membership] == :minimum
                current_tags = (falconctl_cmd '-g', '--tags').strip.split('=')[-1].chomp('.').to_s
                current_tags = [] if %r{tags are not set}i.match?(current_tags)
