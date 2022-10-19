@@ -131,7 +131,7 @@
 # @param tag_membership
 #  Rather specified tags should be treated as a complete list `inclusive` or as a list of tags to add to the existing list `minimum`.
 #  `inclusive` will ensure the sensor has only the tags specified in `tags` removing any tags that are not specified. `minimum` will
-#  ensure the sensor has the tags specified in `tags` but will not remove any existing tags. Defaults to `inclusive`.
+#  ensure the sensor has the tags specified in `tags` but will not remove any existing tags. Defaults to `minimum`.
 #
 class falcon (
   # falcon::config
