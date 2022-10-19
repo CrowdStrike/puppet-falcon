@@ -115,9 +115,9 @@ Puppet::Type.type(:falconctl).provide(:linux) do
   def proxy_enabled=(value)
     desired_value = !to_boolean(value.to_s)
     if desired_value
-      Puppet.notice('Disabling proxy by setting proxy disable to true')
+      Puppet.debug('Disabling proxy by setting proxy disable to true')
     else
-      Puppet.notice('Enabling proxy by setting proxy disable to false')
+      Puppet.debug('Enabling proxy by setting proxy disable to false')
     end
     falconctl_cmd('-sf', "--apd=#{desired_value}")
   end
