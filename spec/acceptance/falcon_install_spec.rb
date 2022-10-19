@@ -121,5 +121,89 @@ describe 'install falcon' do
         end
       end
     end
+
+    describe 'tags' do
+      context 'minimum tags' do
+        manifest = <<-MANIFEST
+          class { 'falcon':
+            falcon_cloud => 'api.us-2.crowdstrike.com',
+            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            tags => ['tag1', 'tag2'],
+            tag_membership => minimum,
+            cid => '#{ENV['CID']}',
+          }
+        MANIFEST
+
+        it 'applies idempotently' do
+          apply_manifest(manifest, { catch_failures: true, debug: true })
+          apply_manifest(manifest, { catch_changes: true, debug: true })
+        end
+
+        describe command('/opt/CrowdStrike/falconctl -g --tags') do
+          its(:stdout) { is_expected.to match(%r{tags=tag1,tag2}) }
+        end
+
+        describe package('falcon-sensor') do
+          it { is_expected.to be_installed }
+        end
+      end
+
+      context 'inclusive tags' do
+        manifest = <<-MANIFEST
+          class { 'falcon':
+            falcon_cloud => 'api.us-2.crowdstrike.com',
+            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            tags => ['tag1', 'tag2'],
+            tag_membership => inclusive,
+            cid => '#{ENV['CID']}',
+          }
+        MANIFEST
+
+        command('/opt/CrowdStrike/falconctl -sf --tags=removetag') do
+
+        it 'applies idempotently' do
+          apply_manifest(manifest, { catch_failures: true, debug: true })
+          apply_manifest(manifest, { catch_changes: true, debug: true })
+        end
+
+        describe command('/opt/CrowdStrike/falconctl -g --tags') do
+          its(:stdout) { is_expected.to match(%r{tags=tag1,tag2}) }
+        end
+
+        describe package('falcon-sensor') do
+          it { is_expected.to be_installed }
+        end
+      end
+
+      context 'purge tags' do
+        manifest = <<-MANIFEST
+          class { 'falcon':
+            falcon_cloud => 'api.us-2.crowdstrike.com',
+            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            tags => [],
+            tag_membership => inclusive,
+            cid => '#{ENV['CID']}',
+          }
+        MANIFEST
+
+        command('/opt/CrowdStrike/falconctl -sf --tags=ci,testing') do
+
+        it 'applies idempotently' do
+          apply_manifest(manifest, { catch_failures: true, debug: true })
+          apply_manifest(manifest, { catch_changes: true, debug: true })
+        end
+
+        describe command('/opt/CrowdStrike/falconctl -g --tags') do
+          its(:stdout) { is_expected.to match(%r{tags are not set}) }
+        end
+
+        describe package('falcon-sensor') do
+          it { is_expected.to be_installed }
+        end
+      end
+    end
   end
 end
