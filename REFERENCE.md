@@ -79,6 +79,8 @@ The following parameters are available in the `falcon` class:
 * [`proxy_host`](#proxy_host)
 * [`proxy_port`](#proxy_port)
 * [`proxy_enabled`](#proxy_enabled)
+* [`tags`](#tags)
+* [`tag_membership`](#tag_membership)
 
 ##### <a name="package_manage"></a>`package_manage`
 
@@ -311,6 +313,24 @@ Whether proxy is enabled. Defaults to `undef`.
 
 Default value: `$falcon::params::proxy_enabled`
 
+##### <a name="tags"></a>`tags`
+
+Data type: `Optional[Array[String]]`
+
+List of tags to apply to the sensor. Defaults to `undef`.
+
+Default value: `$falcon::params::tags`
+
+##### <a name="tag_membership"></a>`tag_membership`
+
+Data type: `Optional[Enum['inclusive', 'minimum']]`
+
+Rather specified tags should be treated as a complete list `inclusive` or as a list of tags to add to the existing list `minimum`.
+`inclusive` will ensure the sensor has only the tags specified in `tags` removing any tags that are not specified. `minimum` will
+ensure the sensor has the tags specified in `tags` but will not remove any existing tags. Defaults to `minimum`.
+
+Default value: `$falcon::params::tag_membership`
+
 ## Resource types
 
 ### <a name="falconctl"></a>`falconctl`
@@ -339,6 +359,10 @@ The proxy host to set for the Falcon Sensor
 
 The proxy port to set for the Falcon Sensor
 
+##### `tags`
+
+List of tags to set for the Falcon Sensor
+
 #### Parameters
 
 The following parameters are available in the `falconctl` type.
@@ -346,6 +370,7 @@ The following parameters are available in the `falconctl` type.
 * [`name`](#name)
 * [`provider`](#provider)
 * [`provisioning_token`](#provisioning_token)
+* [`tag_membership`](#tag_membership)
 
 ##### <a name="name"></a>`name`
 
@@ -363,6 +388,15 @@ discover the appropriate provider for your platform.
 The provisioning token used to register the sensor
 
 Default value: ``undef``
+
+##### <a name="tag_membership"></a>`tag_membership`
+
+Valid values: `inclusive`, `minimum`
+
+Rather specified tags should be treated as a complete list `inclusive` or as a list of tags to add to the existing list
+`minimum`.
+
+Default value: `minimum`
 
 ### <a name="sensor_download"></a>`sensor_download`
 

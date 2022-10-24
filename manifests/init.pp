@@ -125,6 +125,14 @@
 # @param proxy_enabled
 #  Whether proxy is enabled. Defaults to `undef`.
 #
+# @param tags
+#  List of tags to apply to the sensor. Defaults to `undef`.
+# 
+# @param tag_membership
+#  Rather specified tags should be treated as a complete list `inclusive` or as a list of tags to add to the existing list `minimum`.
+#  `inclusive` will ensure the sensor has only the tags specified in `tags` removing any tags that are not specified. `minimum` will
+#  ensure the sensor has the tags specified in `tags` but will not remove any existing tags. Defaults to `minimum`.
+#
 class falcon (
   # falcon::config
   Optional[String] $cid                          = $falcon::params::cid,
@@ -134,6 +142,9 @@ class falcon (
   Optional[String] $proxy_host                   = $falcon::params::proxy_host,
   Optional[Numeric] $proxy_port                  = $falcon::params::proxy_port,
   Optional[Boolean] $proxy_enabled               = $falcon::params::proxy_enabled,
+
+  Optional[Array[String]] $tags                  = $falcon::params::tags,
+  Optional[Enum['inclusive', 'minimum']] $tag_membership = $falcon::params::tag_membership,
 
   # falcon::install
   String $falcon_cloud                           = $falcon::params::falcon_cloud,

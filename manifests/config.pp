@@ -11,6 +11,8 @@ class falcon::config {
       proxy_host         => $falcon::proxy_host,
       proxy_port         => $falcon::proxy_port,
       proxy_enabled      => $falcon::proxy_enabled,
+      tags               => $falcon::tags,
+      tag_membership     => $falcon::tag_membership,
     }
   }
 }

@@ -34,7 +34,7 @@ Facter.add(:falcon, type: :aggregate) do
       next unless [ 'Linux', 'windows' ].include?(kernel)
 
       if kernel == 'Linux'
-        aid = Facter::Core::Execution.execute('/opt/CrofwdStrike/falconctl -g --aid', { on_fail: :raise })
+        aid = Facter::Core::Execution.execute('/opt/CrowdStrike/falconctl -g --aid', { on_fail: :raise })
 
         if aid.nil? || aid.empty?
           next
@@ -64,6 +64,26 @@ Facter.add(:falcon, type: :aggregate) do
       { aid: aid }
     rescue => exception
       Puppet.debug("Unable to retrieve AID: #{exception}")
+      next
+    end
+  end
+
+  chunk(:tags) do
+    begin
+      kernel = Facter.value('kernel')
+
+      next unless [ 'Linux' ].include?(kernel)
+
+      tags = Facter::Core::Execution.execute('/opt/CrowdStrike/falconctl -g --tags', { on_fail: :raise }).strip.split('=')[-1].chomp('.')
+
+      tags = if tags.include?('tags are not set.')
+               []
+             else
+               tags.split(',')
+             end
+      { tags: tags }
+    rescue => exception
+      Puppet.debug("Unable to retrieve tags: #{exception}")
       next
     end
   end

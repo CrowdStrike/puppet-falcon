@@ -37,6 +37,9 @@ class falcon::params {
   $proxy_port = undef
   $proxy_enabled = undef
 
+  $tags = undef
+  $tag_membership = 'minimum'
+
   # falcon::service
   $service_manage = true
   $service_ensure = 'running'

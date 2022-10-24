@@ -324,6 +324,13 @@ describe 'falcon' do
             it { is_expected.to contain_falconctl('falcon').with_proxy_enabled(proxy_enabled) }
           end
 
+          context 'with tags' do
+            let(:params) { super().merge('tags' => ['tag1'], 'tag_membership' => 'inclusive') }
+
+            it { is_expected.to contain_falconctl('falcon').with_tags(['tag1']) }
+            it { is_expected.to contain_falconctl('falcon').with_tag_membership('inclusive') }
+          end
+
           context 'when config_manage is false' do
             let(:params) { super().merge('config_manage' => false) }
 
