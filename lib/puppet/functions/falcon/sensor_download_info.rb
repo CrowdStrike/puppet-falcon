@@ -44,7 +44,7 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
 
     # If version is provied, use it to get the sensor package info
     if options.key?('version') && !options['version'].nil?
-      query = build_sensor_installer_query(platform_name: platform_name, version: version, os_name: os_name, os_version: os_version, architecture: architecture)
+      query = build_sensor_installer_query(platform_name: platform_name, version: options['version'], os_name: os_name, os_version: os_version, architecture: architecture)
       installer = falcon_api.falcon_installers(query)[0]
     # If update_policy is provided, use it to get the sensor package info
     elsif options.key?('update_policy') && !options['update_policy'].nil?
