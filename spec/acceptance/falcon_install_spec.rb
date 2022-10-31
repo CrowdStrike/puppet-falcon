@@ -1,7 +1,5 @@
 require 'spec_helper_acceptance'
 
-host_inventory['facter']['os']['release']['major'] 
-
 describe 'install falcon' do
   before(:all) do
     ensure_absent_pp = <<-MANIFEST
