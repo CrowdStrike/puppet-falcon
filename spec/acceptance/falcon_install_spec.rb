@@ -205,5 +205,24 @@ describe 'install falcon' do
         end
       end
     end
+
+    describe 'specific version' do
+      context 'install specific version' do
+        manifest = <<-MANIFEST
+          class { 'falcon':
+            falcon_cloud => 'api.us-2.crowdstrike.com',
+            cid => '#{ENV['CID']}',
+            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            version => '6.46.14306',
+          }
+          MANIFEST
+
+        it 'applies idempotently' do
+          apply_manifest(manifest, { catch_failures: true, debug: true })
+          apply_manifest(manifest, { catch_changes: true, debug: true })
+        end
+      end
+    end
   end
 end
