@@ -1,3 +1,21 @@
+def falconctl_exec(option)
+  stdout = Facter::Core::Execution.execute('/opt/CrowdStrike/falconctl -g --' + option, { on_fail: :raise })
+  return if stdout.empty? || stdout.include?('not set')
+
+  output = if stdout.include?('version')
+             stdout.gsub(%r{['\s\n]|\(.*\)}, '').split('=')[-1]
+           elsif stdout.include?('rfm-reason')
+             stdout.gsub(%r{^rfm-reason=|['\s\n\.]|\(.*\)}, '')
+           elsif stdout.include?('aph')
+             stdout.gsub(%r{\.$\n}, '').split('=')[-1]
+           else
+             stdout.gsub(%r{["\s\n\.]|\(.*\)}, '').split('=')[-1]
+           end
+  output
+rescue
+  nil
+end
+
 # rubocop:disable Style/RedundantBegin
 Facter.add(:falcon, type: :aggregate) do
   chunk(:version) do
