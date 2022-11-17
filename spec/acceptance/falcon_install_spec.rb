@@ -99,7 +99,7 @@ describe 'install falcon' do
           apply_manifest(manifest, { catch_failures: true, debug: true })
           apply_manifest(manifest, { catch_changes: true, debug: true })
         end
-        
+
         describe 'proxy port' do
           subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --app') }
 
@@ -107,7 +107,7 @@ describe 'install falcon' do
 
           it 'is a fact' do
             expect(facts.exit_status).to eq 0
-            expect(JSON.parse(facts.stdout)['falcon']['proxy']['port']).to eq "8080"
+            expect(JSON.parse(facts.stdout)['falcon']['proxy']['port']).to eq '8080'
           end
 
           it 'is set in falconctl' do
