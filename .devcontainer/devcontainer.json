@@ -22,5 +22,5 @@
 	"mounts": [
 		"source=${localWorkspaceFolder},target=/etc/puppetlabs/code/environments/production/modules/falcon,type=bind,consistency=cached",
 	],
-	"postStartCommand": "bundle install"
+	"postStartCommand": "pdk bundle install"
 }

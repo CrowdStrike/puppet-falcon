@@ -7,13 +7,59 @@ def falconctl_exec(option)
            elsif stdout.include?('rfm-reason')
              stdout.gsub(%r{^rfm-reason=|['\s\n\.]|\(.*\)}, '')
            elsif stdout.include?('aph')
-             stdout.gsub(%r{\.$\n}, '').split('=')[-1]
+             stdout.strip.split('=')[-1].chomp('.')
            else
              stdout.gsub(%r{["\s\n\.]|\(.*\)}, '').split('=')[-1]
            end
-  output
+  return output if output
 rescue
   nil
+end
+
+def to_boolean(str)
+  str.casecmp('true').zero? || str.casecmp('1').zero?
+end
+
+def get_cid
+  falconctl_exec('cid')
+end
+
+def get_aid
+  falconctl_exec('aid')
+end
+
+def get_tags
+  tags = falconctl_exec('tags')
+  return [] unless tags
+  tags.split(',')
+end
+
+def get_rfm_reason
+  falconctl_exec('rfm-reason')
+end
+
+def get_rfm_state
+  rfm_state = falconctl_exec('rfm-state')
+  return if rfm_state.nil?
+  to_boolean(rfm_state)
+end
+
+def get_apd
+  apd = falconctl_exec('apd')
+  return if apd.nil?
+  !to_boolean(apd)
+end
+
+def get_aph
+  falconctl_exec('aph')
+end
+
+def get_app
+  falconctl_exec('app')
+end
+
+def get_billing
+  falconctl_exec('billing')
 end
 
 # rubocop:disable Style/RedundantBegin
@@ -52,13 +98,7 @@ Facter.add(:falcon, type: :aggregate) do
       next unless [ 'Linux', 'windows' ].include?(kernel)
 
       if kernel == 'Linux'
-        aid = Facter::Core::Execution.execute('/opt/CrowdStrike/falconctl -g --aid', { on_fail: :raise })
-
-        if aid.nil? || aid.empty?
-          next
-        end
-
-        aid = aid.gsub(%r{aid="|".}, '')
+        aid = get_aid
       elsif kernel == 'windows'
         require 'win32/registry'
 
@@ -75,9 +115,7 @@ Facter.add(:falcon, type: :aggregate) do
         end
       end
 
-      if aid.nil? || aid.empty? || aid.include?('aid is not set.')
-        aid = :unset
-      end
+      aid = nil if aid.include?('aid is not set.') || aid.empty?
 
       { aid: aid }
     rescue => exception
@@ -102,6 +140,99 @@ Facter.add(:falcon, type: :aggregate) do
       { tags: tags }
     rescue => exception
       Puppet.debug("Unable to retrieve tags: #{exception}")
+      next
+    end
+  end
+
+  chunk(:cid) do
+    begin
+      kernel = Facter.value('kernel')
+      next unless [ 'Linux' ].include?(kernel)
+
+      { cid: get_cid }
+    rescue => exception
+      Puppet.debug("Unable to retrieve CID: #{exception}")
+      next
+    end
+  end
+
+  chunk(:tags) do
+    begin
+      kernel = Facter.value('kernel')
+      next unless [ 'Linux' ].include?(kernel)
+
+      { tags: get_tags }
+    rescue => exception
+      Puppet.debug("Unable to retrieve tags: #{exception}")
+      next
+    end
+  end
+
+  chunk(:rfm_state) do
+    begin
+      kernel = Facter.value('kernel')
+      next unless [ 'Linux' ].include?(kernel)
+
+      { rfm: { state: get_rfm_state } }
+    rescue => exception
+      Puppet.debug("Unable to retrieve RFM state: #{exception}")
+      next
+    end
+  end
+
+  chunk(:rfm_reason) do
+    begin
+      kernel = Facter.value('kernel')
+      next unless [ 'Linux' ].include?(kernel)
+      next unless get_rfm_state
+
+      { rfm: { reason: get_rfm_reason } }
+    rescue => exception
+      Puppet.debug("Unable to retrieve RFM reason: #{exception}")
+      next
+    end
+  end
+
+  chunk(:proxy_enabled) do
+    begin
+      kernel = Facter.value('kernel')
+      next unless [ 'Linux' ].include?(kernel)
+      { proxy: { enabled: get_apd } }
+    rescue => exception
+      Puppet.debug("Unable to retrieve proxy enabled: #{exception}")
+      next
+    end
+  end
+
+  chunk(:proxy_host) do
+    begin
+      kernel = Facter.value('kernel')
+      next unless [ 'Linux' ].include?(kernel)
+      { proxy: { host: get_aph } }
+    rescue => exception
+      Puppet.debug("Unable to retrieve proxy host: #{exception}")
+      next
+    end
+  end
+
+  chunk(:proxy_port) do
+    begin
+      kernel = Facter.value('kernel')
+      next unless [ 'Linux' ].include?(kernel)
+      { proxy: { port: get_app } }
+    rescue => exception
+      Puppet.debug("Unable to retrieve proxy port: #{exception}")
+      next
+    end
+  end
+
+  chunk(:billing) do
+    begin
+      kernel = Facter.value('kernel')
+      next unless [ 'Linux' ].include?(kernel)
+      { billing: get_billing }
+    rescue => exception
+      Puppet.debug("Unable to retrieve billing: #{exception}")
       next
     end
   end
