@@ -126,9 +126,9 @@ jobs:
         CI=true bundle exec rake 'litmus:install_module'
     - name: Run acceptance tests
       env:
-        CLIENT_ID: ${{ secrets.LITMUS_CLIENT_ID }}
-        CLIENT_SECRET: ${{ secrets.LITMUS_CLIENT_SECRET }}
-        CID: ${{ secrets.LITMUS_CID }}
+        FALCON_CLIENT_ID: ${{ secrets.LITMUS_CLIENT_ID }}
+        FALCON_CLIENT_SECRET: ${{ secrets.LITMUS_CLIENT_SECRET }}
+        FALCON_CID: ${{ secrets.LITMUS_CID }}
         DEBUG: true
       run: |
         CI=true DEBUG=true bundle exec rake 'litmus:acceptance:parallel'

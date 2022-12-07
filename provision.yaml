@@ -2,7 +2,7 @@
 local:
   provisioner: docker
   images:
-    - "litmusimage/centos:8"
+    - "ghcr.io/ffalor/ubuntu:20.04"
 
 linux:
   provisioner: docker

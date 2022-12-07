@@ -18,9 +18,9 @@ describe 'install falcon' do
           manifest = <<-MANIFEST
             class { 'falcon':
               falcon_cloud => 'api.us-2.crowdstrike.com',
-              client_id => Sensitive('#{ENV['CLIENT_ID']}'),
-              client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
-              cid => '#{ENV['CID']}',
+              client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
+              client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+              cid => '#{ENV['FALCON_CID']}',
               version_decrement => #{version_decrement},
             }
           MANIFEST
@@ -33,6 +33,27 @@ describe 'install falcon' do
           describe package('falcon-sensor') do
             it { is_expected.to be_installed }
           end
+
+          describe 'facts' do
+            subject(:output) { command('puppet facts falcon') }
+
+            it 'has a version' do
+              expect(output.exit_status).to eq 0
+              expect(JSON.parse(output.stdout)['falcon']['version']).not_to be_nil
+              expect(JSON.parse(output.stdout)['falcon']['version']).not_to be_empty
+            end
+
+            it 'has an aid' do
+              expect(output.exit_status).to eq 0
+              expect(JSON.parse(output.stdout)['falcon']['aid']).not_to be_nil
+              expect(JSON.parse(output.stdout)['falcon']['aid']).not_to be_empty
+            end
+
+            it 'has a cid' do
+              expect(output.exit_status).to eq 0
+              expect(JSON.parse(output.stdout)['falcon']['cid']).to eq(ENV.fetch('FALCON_CID').downcase.split('-').first)
+            end
+          end
         end
       end
     end
@@ -42,10 +63,10 @@ describe 'install falcon' do
         manifest = <<-MANIFEST
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
             update_policy => 'platform_default',
-            cid => '#{ENV['CID']}',
+            cid => '#{ENV['FALCON_CID']}',
           }
         MANIFEST
 
@@ -65,12 +86,12 @@ describe 'install falcon' do
         manifest = <<-MANIFEST
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
             proxy_port => 8080,
             proxy_host => 'proxy.example.com',
             proxy_enabled => true,
-            cid => '#{ENV['CID']}',
+            cid => '#{ENV['FALCON_CID']}',
           }
         MANIFEST
 
@@ -79,16 +100,52 @@ describe 'install falcon' do
           apply_manifest(manifest, { catch_changes: true, debug: true })
         end
 
-        describe command('/opt/CrowdStrike/falconctl -g --app') do
-          its(:stdout) { is_expected.to match(%r{app=8080}) }
+        describe 'proxy port' do
+          subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --app') }
+
+          subject(:facts) { command('puppet facts falcon') }
+
+          it 'is a fact' do
+            expect(facts.exit_status).to eq 0
+            expect(JSON.parse(facts.stdout)['falcon']['proxy']['port']).to eq '8080'
+          end
+
+          it 'is set in falconctl' do
+            expect(falconctl.exit_status).to eq 0
+            expect(falconctl.stdout).to match(%r{app=8080})
+          end
         end
 
-        describe command('/opt/CrowdStrike/falconctl -g --aph') do
-          its(:stdout) { is_expected.to match(%r{aph=proxy.example.com}) }
+        describe 'proxy host' do
+          subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --aph') }
+
+          subject(:facts) { command('puppet facts falcon') }
+
+          it 'is a fact' do
+            expect(facts.exit_status).to eq 0
+            expect(JSON.parse(facts.stdout)['falcon']['proxy']['host']).to eq 'proxy.example.com'
+          end
+
+          it 'is set in falconctl' do
+            expect(falconctl.exit_status).to eq 0
+            expect(falconctl.stdout).to match(%r{aph=proxy.example.com})
+          end
         end
 
-        describe command('/opt/CrowdStrike/falconctl -g --apd') do
-          its(:stdout) { is_expected.to match(%r{apd=false}i) }
+        describe 'proxy enabled' do
+          subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --apd') }
+
+          subject(:facts) { command('puppet facts falcon') }
+
+          it 'is a fact' do
+            expect(facts.exit_status).to eq 0
+            expect(JSON.parse(facts.stdout)['falcon']['proxy']['enabled']).to eq true
+          end
+
+          it 'is set in falconctl' do
+            expect(falconctl.exit_status).to eq 0
+            expect(falconctl.stdout).to match(%r{apd=false}i)
+          end
         end
 
         describe package('falcon-sensor') do
@@ -100,10 +157,10 @@ describe 'install falcon' do
         manifest = <<-MANIFEST
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
             proxy_enabled => false,
-            cid => '#{ENV['CID']}',
+            cid => '#{ENV['FALCON_CID']}',
           }
         MANIFEST
 
@@ -112,8 +169,20 @@ describe 'install falcon' do
           apply_manifest(manifest, { catch_changes: true, debug: true })
         end
 
-        describe command('/opt/CrowdStrike/falconctl -g --apd') do
-          its(:stdout) { is_expected.to match(%r{apd=true}i) }
+        describe 'proxy enabled' do
+          subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --apd') }
+
+          subject(:facts) { command('puppet facts falcon') }
+
+          it 'is a fact' do
+            expect(facts.exit_status).to eq 0
+            expect(JSON.parse(facts.stdout)['falcon']['proxy']['enabled']).to eq false
+          end
+
+          it 'is set in falconctl' do
+            expect(falconctl.exit_status).to eq 0
+            expect(falconctl.stdout).to match(%r{apd=true}i)
+          end
         end
 
         describe package('falcon-sensor') do
@@ -127,11 +196,11 @@ describe 'install falcon' do
         manifest = <<-MANIFEST
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
             tags => ['tag1', 'tag2'],
             tag_membership => minimum,
-            cid => '#{ENV['CID']}',
+            cid => '#{ENV['FALCON_CID']}',
           }
         MANIFEST
 
@@ -140,8 +209,20 @@ describe 'install falcon' do
           apply_manifest(manifest, { catch_changes: true, debug: true })
         end
 
-        describe command('/opt/CrowdStrike/falconctl -g --tags') do
-          its(:stdout) { is_expected.to match(%r{tags=tag1,tag2}) }
+        describe 'facts' do
+          subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --tags') }
+
+          subject(:facts) { command('puppet facts falcon') }
+
+          it 'is a fact' do
+            expect(facts.exit_status).to eq 0
+            expect(JSON.parse(facts.stdout)['falcon']['tags']).to eq ['tag1', 'tag2']
+          end
+
+          it 'is set in falconctl' do
+            expect(falconctl.exit_status).to eq 0
+            expect(falconctl.stdout).to match(%r{tags=tag1,tag2})
+          end
         end
 
         describe package('falcon-sensor') do
@@ -153,11 +234,11 @@ describe 'install falcon' do
         manifest = <<-MANIFEST
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
             tags => ['tag1', 'tag2'],
             tag_membership => inclusive,
-            cid => '#{ENV['CID']}',
+            cid => '#{ENV['FALCON_CID']}',
           }
         MANIFEST
 
@@ -171,6 +252,22 @@ describe 'install falcon' do
             its(:stdout) { is_expected.to match(%r{tags=tag1,tag2}) }
           end
 
+          describe 'tags' do
+            subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --tags') }
+
+            subject(:facts) { command('puppet facts falcon') }
+
+            it 'is a fact' do
+              expect(facts.exit_status).to eq 0
+              expect(JSON.parse(facts.stdout)['falcon']['tags']).to eq ['tag1', 'tag2']
+            end
+
+            it 'is set in falconctl' do
+              expect(falconctl.exit_status).to eq 0
+              expect(falconctl.stdout).to match(%r{tags=tag1,tag2})
+            end
+          end
+
           describe package('falcon-sensor') do
             it { is_expected.to be_installed }
           end
@@ -180,11 +277,11 @@ describe 'install falcon' do
           manifest = <<-MANIFEST
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
             tags => [],
             tag_membership => inclusive,
-            cid => '#{ENV['CID']}',
+            cid => '#{ENV['FALCON_CID']}',
           }
         MANIFEST
 
@@ -194,8 +291,20 @@ describe 'install falcon' do
               apply_manifest(manifest, { catch_changes: true, debug: true })
             end
 
-            describe command('/opt/CrowdStrike/falconctl -g --tags') do
-              its(:stdout) { is_expected.to match(%r{tags are not set}) }
+            describe 'tags' do
+              subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --tags') }
+
+              subject(:facts) { command('puppet facts falcon') }
+
+              it 'is a fact' do
+                expect(facts.exit_status).to eq 0
+                expect(JSON.parse(facts.stdout)['falcon']['tags']).to eq []
+              end
+
+              it 'is set in falconctl' do
+                expect(falconctl.exit_status).to eq 0
+                expect(falconctl.stdout).to match(%r{tags are not set})
+              end
             end
 
             describe package('falcon-sensor') do
@@ -211,9 +320,9 @@ describe 'install falcon' do
         manifest = <<-MANIFEST
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            cid => '#{ENV['CID']}',
-            client_id => Sensitive('#{ENV['CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['CLIENT_SECRET']}'),
+            cid => '#{ENV['FALCON_CID']}',
+            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
             version => '6.46.14306',
           }
           MANIFEST
