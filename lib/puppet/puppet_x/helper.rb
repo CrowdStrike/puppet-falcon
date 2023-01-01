@@ -13,9 +13,9 @@ def build_sensor_installer_query(platform_name:, os_name: nil, version: nil, os_
 
   unless architecture.nil?
     query += case architecture
-             when ['x86_64', 'amd64']
+             when 'x86_64', 'amd64'
                "+os_version:!~'arm64'+os_version:!~'zLinux'"
-             when ['arm64', 'aarch64', 'arm']
+             when 'arm64', 'aarch64', 'arm'
                "+os_version:~'arm64'"
              when 's390x'
                "+os_version:~'s390x'"
