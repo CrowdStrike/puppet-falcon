@@ -37,7 +37,7 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
     platform_name = platform(scope)
     os_name = os_name(scope, platform_name)
     os_version = os_version(scope, os_name)
-    architecture = scope['facts']['architecture']
+    architecture = scope['facts']['os']['architecture']
 
     falcon_api = FalconApi.new(falcon_cloud: options['falcon_cloud'], client_id: client_id, client_secret: client_secret)
     falcon_api.platform_name = platform_name

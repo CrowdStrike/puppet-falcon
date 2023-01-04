@@ -12,10 +12,15 @@ def build_sensor_installer_query(platform_name:, os_name: nil, version: nil, os_
   end
 
   unless architecture.nil?
-    query += if architecture.casecmp('arm64').zero?
+    query += case architecture
+             when 'x86_64', 'amd64', 'x64'
+               "+os_version:!~'arm64'+os_version:!~'zLinux'"
+             when 'arm64', 'aarch64', 'arm'
                "+os_version:~'arm64'"
+             when 's390x'
+               "+os_version:~'s390x'"
              else
-               "+os_version:!~'arm64'"
+               raise Puppet::Error, "Unsupported architecture: #{architecture}"
              end
   end
 
