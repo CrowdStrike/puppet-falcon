@@ -32,5 +32,4 @@ windows:
 
 # Puppet versions to test agaisnt
 collections:
-  - puppet6-nightly
   - puppet7-nightly
