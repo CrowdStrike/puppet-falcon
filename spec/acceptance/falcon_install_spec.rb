@@ -323,7 +323,7 @@ describe 'install falcon' do
             cid => '#{ENV['FALCON_CID']}',
             client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
             client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
-            version => '6.46.14306',
+            version => '6.51.14812',
           }
           MANIFEST
 
