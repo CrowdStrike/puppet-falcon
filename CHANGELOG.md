@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v0.6.1](https://github.com/crowdstrike/puppet-falcon/tree/v0.6.1) (2023-03-30)
+
+[Full Changelog](https://github.com/crowdstrike/puppet-falcon/compare/v0.6.1...v0.6.1)
+
+### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
+
+- Fix issue with s390x support on sensor API [\#66](https://github.com/CrowdStrike/puppet-falcon/pull/66) ([carlosmmatos](https://github.com/carlosmmatos))
+- Add facts [\#62](https://github.com/CrowdStrike/puppet-falcon/pull/62) ([ffalor](https://github.com/ffalor))
+
 ## [v0.6.1](https://github.com/crowdstrike/puppet-falcon/tree/v0.6.1) (2022-10-31)
 
 [Full Changelog](https://github.com/crowdstrike/puppet-falcon/compare/v0.6.0...v0.6.1)
