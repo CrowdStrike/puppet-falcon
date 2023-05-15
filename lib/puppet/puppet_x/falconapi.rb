@@ -60,8 +60,7 @@ class FalconApi
         raise Puppet::Error, "Policy: '#{update_policy}' and Platform: '#{platform_name}' returned zero installer versions"
       end
 
-      version = body['resources'][0]['settings']['sensor_version']
-      version
+      body['resources'][0]['settings']['sensor_version']
     else
       raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
     end
