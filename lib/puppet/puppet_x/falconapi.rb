@@ -9,7 +9,7 @@ class FalconApi
   attr_accessor :bearer_token
   attr_accessor :update_policy
   attr_accessor :platform_name
-  attr_accessor :version
+  attr_accessor :module_version
 
   # Initialize a new FalconApi instance.
   # - falcon_cloud - the name of the falcon cloud to use.
@@ -30,7 +30,7 @@ class FalconApi
                     end
     @client_id = client_id
     @client_secret = client_secret
-    @version = '6.0.0'
+    @module_version = 'v0.7.0'
   end
 
   # Returns the version of the sensor installer for the given policy and platform name.
@@ -43,7 +43,7 @@ class FalconApi
     request = Net::HTTP::Get.new(url_path)
     request['Content-Type'] = 'application/json'
     request['Authorization'] = "Bearer #{@bearer_token.unwrap}"
-    request['User-Agent'] = "crowdstrike-puppet/#{@version}"
+    request['User-Agent'] = "crowdstrike-puppet/#{@module_version}"
 
     resp = @http_client.request(request)
 
@@ -60,8 +60,7 @@ class FalconApi
         raise Puppet::Error, "Policy: '#{update_policy}' and Platform: '#{platform_name}' returned zero installer versions"
       end
 
-      @version = body['resources'][0]['settings']['sensor_version']
-      version
+      body['resources'][0]['settings']['sensor_version']
     else
       raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
     end
@@ -78,7 +77,7 @@ class FalconApi
     request = Net::HTTP::Get.new(url_path)
     request['Content-Type'] = 'application/json'
     request['Authorization'] = "Bearer #{@bearer_token.unwrap}"
-    request['User-Agent'] = "crowdstrike-puppet/#{@version}"
+    request['User-Agent'] = "crowdstrike-puppet/#{@module_version}"
 
     resp = @http_client.request(request)
 
@@ -105,7 +104,7 @@ class FalconApi
     request = Net::HTTP::Get.new(url_path)
     request['Content-Type'] = 'application/json'
     request['Authorization'] = "Bearer #{@bearer_token}"
-    request['User-Agent'] = "crowdstrike-puppet/#{@version}"
+    request['User-Agent'] = "crowdstrike-puppet/#{@module_version}"
 
     resp = @http_client.request(request)
 
@@ -156,7 +155,7 @@ class FalconApi
 
     request = Net::HTTP::Post.new(url_path)
     request['Content-Type'] = 'application/x-www-form-urlencoded'
-    request['User-Agent'] = "crowdstrike-puppet/#{@version}"
+    request['User-Agent'] = "crowdstrike-puppet/#{@module_version}"
     request.body = URI.encode_www_form(req_body)
 
     resp = @http_client.request(request)
