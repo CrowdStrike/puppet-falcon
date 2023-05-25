@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkoutfasfs@v2
         with:
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
+          ref: ${{github.event.pull_request.fsfsafhead.ref}}
+          repository: ${{github.event.pull_request.head.sfsafrepo.full_name}}sfafasf
       - name: "Run PDk Validate"
         uses: docker://puppet/iac_release:ci
         with:
