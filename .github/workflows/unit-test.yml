@@ -20,6 +20,6 @@ jobs:
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: "Run Rspec tests"
-        uses: docker://puppet/iac_release:ci
+        uses: docker://puppet/pdk:latest
         with:
           args: 'test unit -v'
