@@ -4,9 +4,7 @@
 # @api private
 #
 class falcon::install {
-
   if $falcon::package_manage {
-
     if $falcon::install_method == 'api' {
       if !($falcon::client_id and $falcon::client_secret) {
         fail("client_id and client_secret are required when install_method is 'api'")
@@ -22,16 +20,16 @@ class falcon::install {
 
       $info = falcon::sensor_download_info($falcon::client_id, $falcon::client_secret, $config)
 
-      if $falcon::version_manage or ($facts['falcon'].dig('version') in ['absent', undef]){
-          sensor_download { 'Download Sensor Package':
-            ensure         => 'present',
-            version_manage => $falcon::version_manage,
-            version        => $info['version'],
-            file_path      => $info['file_path'],
-            sha256         => $info['sha256'],
-            bearer_token   => $info['bearer_token'],
-            falcon_cloud   => $falcon::falcon_cloud,
-            before         => Package['falcon']
+      if $falcon::version_manage or ($facts['falcon'].dig('version') in ['absent', undef]) {
+        sensor_download { 'Download Sensor Package':
+          ensure         => 'present',
+          version_manage => $falcon::version_manage,
+          version        => $info['version'],
+          file_path      => $info['file_path'],
+          sha256         => $info['sha256'],
+          bearer_token   => $info['bearer_token'],
+          falcon_cloud   => $falcon::falcon_cloud,
+          before         => Package['falcon'],
         }
       }
 
@@ -45,7 +43,7 @@ class falcon::install {
         file { 'Ensure Package is Removed':
           ensure  => 'absent',
           path    => $info['file_path'],
-          require => Package['falcon']
+          require => Package['falcon'],
         }
       }
 
@@ -74,14 +72,14 @@ class falcon::install {
       }
 
       $_package_options = {
-        'install_options' => ['/install', '/quiet', '/norestart'] + falcon::win_install_options($install_args)
-        } + $package_options
+        'install_options' => ['/install', '/quiet', '/norestart'] + falcon::win_install_options($install_args),
+      } + $package_options
     } else {
       $_package_options = $package_options
     }
 
     package { 'falcon':
-      * => $_package_options
+      * => $_package_options,
     }
   }
 }

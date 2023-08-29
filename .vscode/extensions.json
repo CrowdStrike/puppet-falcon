@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "puppet.puppet-vscode",
-    "misogi.ruby-rubocop",
-    "castwide.solargraph"
+    "rebornix.Ruby"
   ]
 }

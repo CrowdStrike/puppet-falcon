@@ -4,7 +4,6 @@
 # @api private
 #
 class falcon::params {
-
   # falcon::install
   $package_manage = true
   $package_name = $facts['kernel'] ? {
