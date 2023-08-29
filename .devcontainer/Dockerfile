@@ -1,3 +1,3 @@
-FROM ghcr.io/ffalor/puppet:latest
+FROM ghcr.io/ffalor/puppet:main
 
 RUN apt-get update
