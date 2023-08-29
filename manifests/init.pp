@@ -168,7 +168,6 @@ class falcon (
   Optional[String] $service_ensure               = $falcon::params::service_ensure,
 
 ) inherits falcon::params {
-
   contain falcon::install
   contain falcon::config
   contain falcon::service
