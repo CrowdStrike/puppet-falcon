@@ -21,7 +21,7 @@
 #   > **_NOTE:_**  The falcon service requires the agent to be registered with the Customer CID in order to start.
 #
 # @param cid
-#  The Customer CID to register the agent with. If not provided, the agent will not be registered. The falcon service can not be started 
+#  The Customer CID to register the agent with. If not provided, the agent will not be registered. The falcon service can not be started
 #  if cid is not configured. Defaults to `undef`.
 #
 #  Ignored if `config_manage` is set to `false`.
@@ -32,7 +32,7 @@
 #   Valid values:
 #     - `api`
 #     - `local`
-# 
+#
 #   When `api` is selected, the falcon api will be used to download the correct version of the falcon sensor.
 #
 #   When `local` is selected, a package resource is created with the values passed in the `package_options` parameter.
@@ -49,11 +49,11 @@
 #
 # @param version_manage
 #   Rather or not puppet should enforce a specific version and do upgrades/downgrades. Defaults to `false`.
-#   
+#
 #   Ignored if `install_method` is set to `local`.
 #
-#   > **_NOTE:_**  If you use update policies to manage the version, you should set this to `false` to prevent puppet 
-#     and the falcon platform from conflicting. 
+#   > **_NOTE:_**  If you use update policies to manage the version, you should set this to `false` to prevent puppet
+#     and the falcon platform from conflicting.
 #
 # @param falcon_cloud
 #  The name of the cloud to use for the Falcon API. Defaults to `api.crowdstrike.com`
@@ -127,7 +127,7 @@
 #
 # @param tags
 #  List of tags to apply to the sensor. Defaults to `undef`.
-# 
+#
 # @param tag_membership
 #  Rather specified tags should be treated as a complete list `inclusive` or as a list of tags to add to the existing list `minimum`.
 #  `inclusive` will ensure the sensor has only the tags specified in `tags` removing any tags that are not specified. `minimum` will
@@ -135,7 +135,7 @@
 #
 class falcon (
   # falcon::config
-  Optional[String] $cid                          = $falcon::params::cid,
+  Optional[Variant[Sensitive[String], String]] $cid = $falcon::params::cid,
   Optional[Boolean] $config_manage               = $falcon::params::config_manage,
   Optional[String] $provisioning_token           = $falcon::params::provisioning_token,
 

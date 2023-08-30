@@ -1,4 +1,4 @@
-# @summary 
+# @summary
 #   This class handles falcon sensor package.
 #
 # @api private
@@ -64,7 +64,7 @@ class falcon::install {
       }
 
       $install_args = {
-        'CID' => $falcon::cid,
+        'CID' => $falcon::cid.unwrap,
         'ProvToken' => $falcon::provisioning_token,
         'APP_PROXYNAME' => $falcon::proxy_host,
         'APP_PROXYPORT' => $falcon::proxy_port,
