@@ -110,7 +110,7 @@ Default value: `$falcon::params::service_manage`
 
 ##### <a name="cid"></a>`cid`
 
-Data type: `Optional[String]`
+Data type: `Optional[Variant[Sensitive[String], String]]`
 
 The Customer CID to register the agent with. If not provided, the agent will not be registered. The falcon service can not be started
 if cid is not configured. Defaults to `undef`.

@@ -123,6 +123,14 @@ describe 'falcon' do
           it { is_expected.not_to contain_file('Ensure Package is Removed') }
           it { is_expected.not_to contain_sensor_download('Download Sensor Package') }
 
+          context 'sensitive cid provided' do
+            let(:params) do
+              super().merge(cid: sensitive(cid))
+            end
+
+            it { is_expected.to compile.with_all_deps }
+          end
+
           describe 'on windows install' do
             if os_facts[:kernel] == 'windows'
 
@@ -165,6 +173,14 @@ describe 'falcon' do
           it { is_expected.to contain_sensor_download('Download Sensor Package') }
           it { is_expected.to contain_sensor_download('Download Sensor Package').that_comes_before('Package[falcon]') }
 
+          context 'sensitive cid provided' do
+            let(:params) do
+              super().merge(cid: sensitive(cid))
+            end
+
+            it { is_expected.to compile.with_all_deps }
+          end
+
           describe 'on windows install' do
             if os_facts[:kernel] == 'windows'
 
@@ -197,14 +213,6 @@ describe 'falcon' do
                 end
 
                 it { is_expected.to compile.and_raise_error(%r{CID is required to install the Falcon Sensor on Windows}) }
-              end
-
-              context 'sensitive cid provided' do
-                let(:params) do
-                  super().merge(cid: sensitive(cid))
-                end
-
-                it { is_expected.to compile.with_all_deps }
               end
             end
           end
