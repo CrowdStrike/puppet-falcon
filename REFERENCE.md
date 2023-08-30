@@ -24,9 +24,6 @@
 
 ### Functions
 
-#### Public Functions
-
-
 #### Private Functions
 
 * `falcon::sensor_download_info`: Get sensor info like install package SHA and version
@@ -56,33 +53,33 @@ class { 'falcon':
 
 The following parameters are available in the `falcon` class:
 
-* [`package_manage`](#package_manage)
-* [`config_manage`](#config_manage)
-* [`service_manage`](#service_manage)
-* [`cid`](#cid)
-* [`install_method`](#install_method)
-* [`client_id`](#client_id)
-* [`client_secret`](#client_secret)
-* [`version_manage`](#version_manage)
-* [`falcon_cloud`](#falcon_cloud)
-* [`update_policy`](#update_policy)
-* [`sensor_tmp_dir`](#sensor_tmp_dir)
-* [`version`](#version)
-* [`version_decrement`](#version_decrement)
-* [`cleanup_installer`](#cleanup_installer)
-* [`provisioning_token`](#provisioning_token)
-* [`package_name`](#package_name)
-* [`package_options`](#package_options)
-* [`service_enable`](#service_enable)
-* [`service_name`](#service_name)
-* [`service_ensure`](#service_ensure)
-* [`proxy_host`](#proxy_host)
-* [`proxy_port`](#proxy_port)
-* [`proxy_enabled`](#proxy_enabled)
-* [`tags`](#tags)
-* [`tag_membership`](#tag_membership)
+* [`package_manage`](#-falcon--package_manage)
+* [`config_manage`](#-falcon--config_manage)
+* [`service_manage`](#-falcon--service_manage)
+* [`cid`](#-falcon--cid)
+* [`install_method`](#-falcon--install_method)
+* [`client_id`](#-falcon--client_id)
+* [`client_secret`](#-falcon--client_secret)
+* [`version_manage`](#-falcon--version_manage)
+* [`falcon_cloud`](#-falcon--falcon_cloud)
+* [`update_policy`](#-falcon--update_policy)
+* [`sensor_tmp_dir`](#-falcon--sensor_tmp_dir)
+* [`version`](#-falcon--version)
+* [`version_decrement`](#-falcon--version_decrement)
+* [`cleanup_installer`](#-falcon--cleanup_installer)
+* [`provisioning_token`](#-falcon--provisioning_token)
+* [`package_name`](#-falcon--package_name)
+* [`package_options`](#-falcon--package_options)
+* [`service_enable`](#-falcon--service_enable)
+* [`service_name`](#-falcon--service_name)
+* [`service_ensure`](#-falcon--service_ensure)
+* [`proxy_host`](#-falcon--proxy_host)
+* [`proxy_port`](#-falcon--proxy_port)
+* [`proxy_enabled`](#-falcon--proxy_enabled)
+* [`tags`](#-falcon--tags)
+* [`tag_membership`](#-falcon--tag_membership)
 
-##### <a name="package_manage"></a>`package_manage`
+##### <a name="-falcon--package_manage"></a>`package_manage`
 
 Data type: `Optional[Boolean]`
 
@@ -90,7 +87,7 @@ Whether to install and manage the `falcon sensor`. Defaults to `true`.
 
 Default value: `$falcon::params::package_manage`
 
-##### <a name="config_manage"></a>`config_manage`
+##### <a name="-falcon--config_manage"></a>`config_manage`
 
 Data type: `Optional[Boolean]`
 
@@ -98,7 +95,7 @@ Whether to manage the `falcon sensor` configuration. Defaults to `true`.
 
 Default value: `$falcon::params::config_manage`
 
-##### <a name="service_manage"></a>`service_manage`
+##### <a name="-falcon--service_manage"></a>`service_manage`
 
 Data type: `Optional[Boolean]`
 
@@ -108,7 +105,7 @@ Whether to manage the service. Defaults to `true`.
 
 Default value: `$falcon::params::service_manage`
 
-##### <a name="cid"></a>`cid`
+##### <a name="-falcon--cid"></a>`cid`
 
 Data type: `Optional[Variant[Sensitive[String], String]]`
 
@@ -119,7 +116,7 @@ Ignored if `config_manage` is set to `false`.
 
 Default value: `$falcon::params::cid`
 
-##### <a name="install_method"></a>`install_method`
+##### <a name="-falcon--install_method"></a>`install_method`
 
 Data type: `Optional[Enum['api', 'local']]`
 
@@ -135,7 +132,7 @@ When `local` is selected, a package resource is created with the values passed i
 
 Default value: `$falcon::params::install_method`
 
-##### <a name="client_id"></a>`client_id`
+##### <a name="-falcon--client_id"></a>`client_id`
 
 Data type: `Optional[Sensitive]`
 
@@ -145,7 +142,7 @@ Required if `install_method` is set to `api` and ignored if `install_method` is 
 
 Default value: `$falcon::params::client_id`
 
-##### <a name="client_secret"></a>`client_secret`
+##### <a name="-falcon--client_secret"></a>`client_secret`
 
 Data type: `Optional[Sensitive]`
 
@@ -155,7 +152,7 @@ Required if `install_method` is set to `api` and ignored if `install_method` is 
 
 Default value: `$falcon::params::client_secret`
 
-##### <a name="version_manage"></a>`version_manage`
+##### <a name="-falcon--version_manage"></a>`version_manage`
 
 Data type: `Optional[Boolean]`
 
@@ -168,7 +165,7 @@ Ignored if `install_method` is set to `local`.
 
 Default value: `$falcon::params::version_manage`
 
-##### <a name="falcon_cloud"></a>`falcon_cloud`
+##### <a name="-falcon--falcon_cloud"></a>`falcon_cloud`
 
 Data type: `String`
 
@@ -178,7 +175,7 @@ Ignored if `install_method` is set to `local`.
 
 Default value: `$falcon::params::falcon_cloud`
 
-##### <a name="update_policy"></a>`update_policy`
+##### <a name="-falcon--update_policy"></a>`update_policy`
 
 Data type: `Optional[String]`
 
@@ -190,7 +187,7 @@ Ignored if `install_method` is set to `local`.
 
 Default value: `$falcon::params::update_policy`
 
-##### <a name="sensor_tmp_dir"></a>`sensor_tmp_dir`
+##### <a name="-falcon--sensor_tmp_dir"></a>`sensor_tmp_dir`
 
 Data type: `Optional[String]`
 
@@ -200,7 +197,7 @@ Ignored if `install_method` is set to `local`.
 
 Default value: `$falcon::params::sensor_tmp_dir`
 
-##### <a name="version"></a>`version`
+##### <a name="-falcon--version"></a>`version`
 
 Data type: `Optional[String]`
 
@@ -210,7 +207,7 @@ Ignored if `install_method` is set to `local`.
 
 Default value: `$falcon::params::version`
 
-##### <a name="version_decrement"></a>`version_decrement`
+##### <a name="-falcon--version_decrement"></a>`version_decrement`
 
 Data type: `Optional[Numeric]`
 
@@ -221,7 +218,7 @@ Ignored if `install_method` is set to `local`.
 
 Default value: `$falcon::params::version_decrement`
 
-##### <a name="cleanup_installer"></a>`cleanup_installer`
+##### <a name="-falcon--cleanup_installer"></a>`cleanup_installer`
 
 Data type: `Optional[Boolean]`
 
@@ -231,7 +228,7 @@ Ignored if `install_method` is set to `local`.
 
 Default value: `$falcon::params::cleanup_installer`
 
-##### <a name="provisioning_token"></a>`provisioning_token`
+##### <a name="-falcon--provisioning_token"></a>`provisioning_token`
 
 Data type: `Optional[String]`
 
@@ -239,7 +236,7 @@ The provisioning token to use to register the sensor with the Falcon API. Defaul
 
 Default value: `$falcon::params::provisioning_token`
 
-##### <a name="package_name"></a>`package_name`
+##### <a name="-falcon--package_name"></a>`package_name`
 
 Data type: `Optional[String]`
 
@@ -251,7 +248,7 @@ Ignored if `install_method` is set to `local`.
 
 Default value: `$falcon::params::package_name`
 
-##### <a name="package_options"></a>`package_options`
+##### <a name="-falcon--package_options"></a>`package_options`
 
 Data type: `Hash[String, Any]`
 
@@ -259,7 +256,7 @@ Allows you to override any package attribute. Defaults to `{}`.
 
 Default value: `$falcon::params::package_options`
 
-##### <a name="service_enable"></a>`service_enable`
+##### <a name="-falcon--service_enable"></a>`service_enable`
 
 Data type: `Optional[Boolean]`
 
@@ -269,7 +266,7 @@ Ignored if `service_manage` is set to `false`.
 
 Default value: `$falcon::params::service_enable`
 
-##### <a name="service_name"></a>`service_name`
+##### <a name="-falcon--service_name"></a>`service_name`
 
 Data type: `Optional[String]`
 
@@ -279,7 +276,7 @@ Ignored if `service_manage` is set to `false`.
 
 Default value: `$falcon::params::service_name`
 
-##### <a name="service_ensure"></a>`service_ensure`
+##### <a name="-falcon--service_ensure"></a>`service_ensure`
 
 Data type: `Optional[String]`
 
@@ -289,7 +286,7 @@ Ignored if `service_manage` is set to `false`.
 
 Default value: `$falcon::params::service_ensure`
 
-##### <a name="proxy_host"></a>`proxy_host`
+##### <a name="-falcon--proxy_host"></a>`proxy_host`
 
 Data type: `Optional[String]`
 
@@ -297,7 +294,7 @@ The proxy host for the falcon agent to use. Defaults to `undef`.
 
 Default value: `$falcon::params::proxy_host`
 
-##### <a name="proxy_port"></a>`proxy_port`
+##### <a name="-falcon--proxy_port"></a>`proxy_port`
 
 Data type: `Optional[Numeric]`
 
@@ -305,7 +302,7 @@ The proxy port for the falcon agent to use. Defaults to `undef`.
 
 Default value: `$falcon::params::proxy_port`
 
-##### <a name="proxy_enabled"></a>`proxy_enabled`
+##### <a name="-falcon--proxy_enabled"></a>`proxy_enabled`
 
 Data type: `Optional[Boolean]`
 
@@ -313,7 +310,7 @@ Whether proxy is enabled. Defaults to `undef`.
 
 Default value: `$falcon::params::proxy_enabled`
 
-##### <a name="tags"></a>`tags`
+##### <a name="-falcon--tags"></a>`tags`
 
 Data type: `Optional[Array[String]]`
 
@@ -321,7 +318,7 @@ List of tags to apply to the sensor. Defaults to `undef`.
 
 Default value: `$falcon::params::tags`
 
-##### <a name="tag_membership"></a>`tag_membership`
+##### <a name="-falcon--tag_membership"></a>`tag_membership`
 
 Data type: `Optional[Enum['inclusive', 'minimum']]`
 
@@ -347,7 +344,7 @@ The cid to set for the Falcon Sensor
 
 ##### `proxy_enabled`
 
-Valid values: ``true``, ``false``
+Valid values: `true`, `false`
 
 Enable or disable the proxy for the Falcon Sensor
 
@@ -367,29 +364,29 @@ List of tags to set for the Falcon Sensor
 
 The following parameters are available in the `falconctl` type.
 
-* [`name`](#name)
-* [`provider`](#provider)
-* [`provisioning_token`](#provisioning_token)
-* [`tag_membership`](#tag_membership)
+* [`name`](#-falconctl--name)
+* [`provider`](#-falconctl--provider)
+* [`provisioning_token`](#-falconctl--provisioning_token)
+* [`tag_membership`](#-falconctl--tag_membership)
 
-##### <a name="name"></a>`name`
+##### <a name="-falconctl--name"></a>`name`
 
 namevar
 
 The name of the resource
 
-##### <a name="provider"></a>`provider`
+##### <a name="-falconctl--provider"></a>`provider`
 
 The specific backend to use for this `falconctl` resource. You will seldom need to specify this --- Puppet will usually
 discover the appropriate provider for your platform.
 
-##### <a name="provisioning_token"></a>`provisioning_token`
+##### <a name="-falconctl--provisioning_token"></a>`provisioning_token`
 
 The provisioning token used to register the sensor
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="tag_membership"></a>`tag_membership`
+##### <a name="-falconctl--tag_membership"></a>`tag_membership`
 
 Valid values: `inclusive`, `minimum`
 
@@ -418,45 +415,43 @@ Default value: `present`
 
 The following parameters are available in the `sensor_download` type.
 
-* [`bearer_token`](#bearer_token)
-* [`falcon_cloud`](#falcon_cloud)
-* [`file_path`](#file_path)
-* [`provider`](#provider)
-* [`sha256`](#sha256)
-* [`version`](#version)
-* [`version_manage`](#version_manage)
+* [`bearer_token`](#-sensor_download--bearer_token)
+* [`falcon_cloud`](#-sensor_download--falcon_cloud)
+* [`file_path`](#-sensor_download--file_path)
+* [`provider`](#-sensor_download--provider)
+* [`sha256`](#-sensor_download--sha256)
+* [`version`](#-sensor_download--version)
+* [`version_manage`](#-sensor_download--version_manage)
 
-##### <a name="bearer_token"></a>`bearer_token`
+##### <a name="-sensor_download--bearer_token"></a>`bearer_token`
 
 The bearer token used to authenticate with the Falcon API
 
-##### <a name="falcon_cloud"></a>`falcon_cloud`
+##### <a name="-sensor_download--falcon_cloud"></a>`falcon_cloud`
 
 The falcon cloud URI to use
 
-##### <a name="file_path"></a>`file_path`
+##### <a name="-sensor_download--file_path"></a>`file_path`
 
 The full path to the file.
 
-##### <a name="provider"></a>`provider`
+##### <a name="-sensor_download--provider"></a>`provider`
 
 The specific backend to use for this `sensor_download` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-##### <a name="sha256"></a>`sha256`
+##### <a name="-sensor_download--sha256"></a>`sha256`
 
 namevar
 
 The sha256 of the package to download
 
-##### <a name="version"></a>`version`
+##### <a name="-sensor_download--version"></a>`version`
 
 The falcon sensor version that should be installed.
 
-##### <a name="version_manage"></a>`version_manage`
+##### <a name="-sensor_download--version_manage"></a>`version_manage`
 
 If true download the required sensor package if current sensor version does not match desired version. False only
 download sensor package when no sensor is installed
-
-## Functions
 
