@@ -21,3 +21,4 @@ jobs:
       LITMUS_CLIENT_ID: ${{ secrets.LITMUS_CLIENT_ID }}
       LITMUS_CLIENT_SECRET: ${{ secrets.LITMUS_CLIENT_SECRET }}
       LITMUS_CID: ${{ secrets.LITMUS_CID }}
+      LINUX_SENSOR_VERSION: ${{ secrets.LINUX_SENSOR_VERSION }}
