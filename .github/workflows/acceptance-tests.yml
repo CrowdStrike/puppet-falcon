@@ -11,6 +11,8 @@ on:
         required: true
       LITMUS_CID:
         required: true
+      LINUX_SENSOR_VERSION:
+        required: true
   pull_request_target:
       types: [ labeled ]
       paths:
@@ -135,6 +137,7 @@ jobs:
         FALCON_CLIENT_ID: ${{ secrets.LITMUS_CLIENT_ID }}
         FALCON_CLIENT_SECRET: ${{ secrets.LITMUS_CLIENT_SECRET }}
         FALCON_CID: ${{ secrets.LITMUS_CID }}
+        LINUX_SENSOR_VERSION: ${{ secrets.LINUX_SENSOR_VERSION }}
         DEBUG: true
       run: |
         CI=true DEBUG=true bundle exec rake 'litmus:acceptance:parallel'
