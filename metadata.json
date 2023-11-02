@@ -7,9 +7,7 @@
   "source": "https://github.com/crowdstrike/puppet-falcon",
   "project_page": "https://github.com/crowdstrike/puppet-falcon",
   "issues_url": "https://github.com/crowdstrike/puppet-falcon/issues",
-  "dependencies": [
-
-  ],
+  "dependencies": [],
   "operatingsystem_support": [
     {
       "operatingsystem": "OSX",
@@ -76,7 +74,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 7.0.0 < 8.0.0"
+      "version_requirement": ">= 7.0.0 < 9.0.0"
     }
   ],
   "tags": [
