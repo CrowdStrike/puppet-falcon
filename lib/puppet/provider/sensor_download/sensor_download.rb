@@ -4,7 +4,7 @@ Puppet::Type.type(:sensor_download).provide(:default) do
   desc 'Download sensor package using Ruby'
 
   def create
-    falcon_api = FalconApi.new(falcon_cloud: @resource[:falcon_cloud], bearer_token: @resource[:bearer_token])
+    falcon_api = FalconApi.new(falcon_cloud: @resource[:falcon_cloud], bearer_token: @resource[:bearer_token], proxy_host: @resource[:proxy_host], proxy_port: @resource[:proxy_port])
     Puppet.notice("Downloading sensor package to location: #{resource[:file_path]}")
     falcon_api.download_installer(@resource['sha256'], @resource['file_path'])
 

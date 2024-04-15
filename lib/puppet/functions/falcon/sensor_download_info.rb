@@ -27,11 +27,13 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
   dispatch :sensor_download_info do
     param 'Sensitive', :client_id
     param 'Sensitive', :client_secret
+    param 'String', :proxy_host
+    param 'Integer', :proxy_port
     param 'Hash', :options
     return_type 'Hash'
   end
 
-  def sensor_download_info(client_id, client_secret, options)
+  def sensor_download_info(client_id, client_secret, proxy_host, proxy_port, options)
     scope = closure_scope
 
     platform_name = platform(scope)
@@ -39,7 +41,7 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
     os_version = os_version(scope, os_name)
     architecture = scope['facts']['os']['architecture']
 
-    falcon_api = FalconApi.new(falcon_cloud: options['falcon_cloud'], client_id: client_id, client_secret: client_secret)
+    falcon_api = FalconApi.new(falcon_cloud: options['falcon_cloud'], client_id: client_id, client_secret: client_secret, proxy_host: proxy_host, proxy_port: proxy_port)
     falcon_api.platform_name = platform_name
 
     # If version is provied, use it to get the sensor package info

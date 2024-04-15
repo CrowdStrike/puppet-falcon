@@ -125,6 +125,12 @@
 # @param proxy_enabled
 #  Whether proxy is enabled. Defaults to `undef`.
 #
+# @param sensor_dl_proxy_host
+#  The proxy host to use when downloading the falcon sensor. Defaults to `undef`.
+#
+# @param sensor_dl_proxy_port
+#  The proxy port to use when downloading the falcon sensor. Defaults to `undef`.
+#
 # @param tags
 #  List of tags to apply to the sensor. Defaults to `undef`.
 #
@@ -160,6 +166,8 @@ class falcon (
   Optional[Numeric] $version_decrement           = $falcon::params::version_decrement,
   Optional[Enum['api', 'local']] $install_method = $falcon::params::install_method,
   Hash[String, Any] $package_options             = $falcon::params::package_options,
+  Optional[String] $sensor_dl_proxy_host         = $falcon::params::sensor_dl_proxy_host,
+  Optional[Numeric] $sensor_dl_proxy_port        = $falcon::params::sensor_dl_proxy_port,
 
   # falcon::service
   Optional[Boolean] $service_manage              = $falcon::params::service_manage,

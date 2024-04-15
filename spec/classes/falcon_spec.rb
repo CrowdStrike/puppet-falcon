@@ -8,6 +8,8 @@ describe 'falcon' do
   let(:proxy_host) { 'proxy.example.com' }
   let(:proxy_port) { 8080 }
   let(:proxy_enabled) { true }
+  let(:sensor_dl_proxy_host) { 'dlproxy.example.com' }
+  let(:sensor_dl_proxy_port) { 8080 }
 
   let(:default_windows_install_options) { ['/install', '/quiet', '/norestart', "CID=#{cid}"] }
 
@@ -179,6 +181,15 @@ describe 'falcon' do
             end
 
             it { is_expected.to compile.with_all_deps }
+          end
+
+          context 'sensor_dl_proxy_port and sensor_dl_proxy_host are provided' do
+            let(:params) do
+              super().merge(sensor_dl_proxy_host: sensor_dl_proxy_host, sensor_dl_proxy_port: sensor_dl_proxy_port)
+            end
+
+            it { is_expected.to contain_sensor_download('Download Sensor Package').with_proxy_host(sensor_dl_proxy_host) }
+            it { is_expected.to contain_sensor_download('Download Sensor Package').with_proxy_port(sensor_dl_proxy_port) }
           end
 
           describe 'on windows install' do
