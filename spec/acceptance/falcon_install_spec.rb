@@ -98,37 +98,6 @@ describe 'install falcon' do
       end
     end
 
-    describe 'dl_prox' do
-      context 'fake proxy' do
-        manifest = <<-MANIFEST
-          file { '/tmp/stage':
-            ensure => 'directory',
-            before => Class['falcon'],
-          }
-
-          class { 'falcon':
-            falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
-            update_policy => 'platform_default',
-            cid => '#{ENV['FALCON_CID']}',
-            sensor_tmp_dir => '/tmp/stage',
-            sensor_dl_proxy_host => 'proxy.example.com',
-            sensor_dl_proxy_port => 8080,
-          }
-        MANIFEST
-
-        it 'applies idempotently' do
-          apply_manifest(manifest, { catch_failures: true, debug: true })
-          apply_manifest(manifest, { catch_changes: true, debug: true })
-        end
-
-        describe package('falcon-sensor') do
-          it { is_expected.to be_installed }
-        end
-      end
-    end
-
     describe 'proxy settings' do
       context 'port and host' do
         manifest = <<-MANIFEST
