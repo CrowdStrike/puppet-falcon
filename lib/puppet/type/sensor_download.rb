@@ -28,6 +28,14 @@ Puppet::Type.newtype(:sensor_download) do
     desc 'The falcon sensor version that should be installed.'
   end
 
+  newparam(:proxy_host) do
+    desc 'The proxy host to use for downloading the sensor package'
+  end
+
+  newparam(:proxy_port) do
+    desc 'The proxy port to use for downloading the sensor package'
+  end
+
   private
 
   def set_sensitive_parameters(sensitive_parameters)

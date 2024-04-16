@@ -27,6 +27,9 @@ class falcon::params {
     'windows' => 'C:\\Windows\\Temp'
   }
 
+  $sensor_dl_proxy_host = undef
+  $sensor_dl_proxy_port = undef
+
   # falcon::config
   $cid = undef
   $config_manage  = true

@@ -16,12 +16,16 @@ class FalconApi
   # - bearer_token - the bearer token to use for authentication.
   # - client_id - the client id to generate the bearer token if not provided.
   # - client_secret - the client id to generate the bearer token if not provided.
-  def initialize(falcon_cloud:, bearer_token: nil, client_id: nil, client_secret: nil)
+  # - proxy_host - the proxy host to use for the http client.
+  # - proxy_port - the proxy port to use for the http client.
+  def initialize(falcon_cloud:, bearer_token: nil, client_id: nil, client_secret: nil, proxy_host: nil, proxy_port: nil)
     if (client_id.nil? || client_secret.nil?) && bearer_token.nil?
       raise ArgumentError, 'client_id and client_secret or bearer_token must be provided'
     end
 
     @falcon_cloud = falcon_cloud
+    @proxy_host = proxy_host
+    @proxy_port = proxy_port
     @http_client = http_client
     @bearer_token = if bearer_token.nil?
                       access_token(client_id, client_secret)
@@ -136,9 +140,9 @@ class FalconApi
   def http_client
     url = URI("https://#{@falcon_cloud}")
 
-    client = Net::HTTP.new(url.host, url.port)
-    client.use_ssl = true
+    client = Net::HTTP.new(url.host, url.port, @proxy_host, @proxy_port)
 
+    client.use_ssl = true
     client
   end
 

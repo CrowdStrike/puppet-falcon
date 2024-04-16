@@ -6,6 +6,10 @@ describe 'install falcon' do
       package { 'falcon-sensor':
         ensure => 'absent',
       }
+
+      file { '/tmp/stage':
+        ensure => 'absent',
+      }
     MANIFEST
 
     apply_manifest(ensure_absent_pp, catch_failures: true)
@@ -16,11 +20,17 @@ describe 'install falcon' do
       [0, 1].each do |version_decrement|
         context "version_decrement=#{version_decrement}" do
           manifest = <<-MANIFEST
+            file { '/tmp/stage':
+              ensure => 'directory',
+              before => Class['falcon'],
+            }
+
             class { 'falcon':
               falcon_cloud => 'api.us-2.crowdstrike.com',
               client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
               client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
               cid => '#{ENV['FALCON_CID']}',
+              sensor_tmp_dir => '/tmp/stage',
               version_decrement => #{version_decrement},
             }
           MANIFEST
@@ -41,6 +51,7 @@ describe 'install falcon' do
               expect(output.exit_status).to eq 0
               expect(JSON.parse(output.stdout)['falcon']['version']).not_to be_nil
               expect(JSON.parse(output.stdout)['falcon']['version']).not_to be_empty
+              expect(JSON.parse(output.stdout)['falcon']['version']).not_to eq('absent')
             end
 
             it 'has an aid' do
@@ -61,11 +72,17 @@ describe 'install falcon' do
     describe 'update_policy' do
       context 'update_policy=platform_default' do
         manifest = <<-MANIFEST
+          file { '/tmp/stage':
+            ensure => 'directory',
+            before => Class['falcon'],
+          }
+
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
             client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
             client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
             update_policy => 'platform_default',
+            sensor_tmp_dir => '/tmp/stage',
             cid => '#{ENV['FALCON_CID']}',
           }
         MANIFEST
@@ -84,6 +101,11 @@ describe 'install falcon' do
     describe 'proxy settings' do
       context 'port and host' do
         manifest = <<-MANIFEST
+          file { '/tmp/stage':
+            ensure => 'directory',
+            before => Class['falcon'],
+          }
+
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
             client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
@@ -91,6 +113,7 @@ describe 'install falcon' do
             proxy_port => 8080,
             proxy_host => 'proxy.example.com',
             proxy_enabled => true,
+            sensor_tmp_dir => '/tmp/stage',
             cid => '#{ENV['FALCON_CID']}',
           }
         MANIFEST
@@ -155,10 +178,16 @@ describe 'install falcon' do
 
       context 'proxy disabled' do
         manifest = <<-MANIFEST
+          file { '/tmp/stage':
+            ensure => 'directory',
+            before => Class['falcon'],
+          }
+
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
             client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
             client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            sensor_tmp_dir => '/tmp/stage',
             proxy_enabled => false,
             cid => '#{ENV['FALCON_CID']}',
           }
@@ -194,10 +223,16 @@ describe 'install falcon' do
     describe 'tags' do
       context 'minimum tags' do
         manifest = <<-MANIFEST
+          file { '/tmp/stage':
+            ensure => 'directory',
+            before => Class['falcon'],
+          }
+
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
             client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
             client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            sensor_tmp_dir => '/tmp/stage',
             tags => ['tag1', 'tag2'],
             tag_membership => minimum,
             cid => '#{ENV['FALCON_CID']}',
@@ -232,11 +267,17 @@ describe 'install falcon' do
 
       context 'inclusive tags' do
         manifest = <<-MANIFEST
+          file { '/tmp/stage':
+            ensure => 'directory',
+            before => Class['falcon'],
+          }
+
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
             client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
             client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
             tags => ['tag1', 'tag2'],
+            sensor_tmp_dir => '/tmp/stage',
             tag_membership => inclusive,
             cid => '#{ENV['FALCON_CID']}',
           }
@@ -275,10 +316,16 @@ describe 'install falcon' do
 
         context 'purge tags' do
           manifest = <<-MANIFEST
+          file { '/tmp/stage':
+            ensure => 'directory',
+            before => Class['falcon'],
+          }
+
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
             client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
             client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            sensor_tmp_dir => '/tmp/stage',
             tags => [],
             tag_membership => inclusive,
             cid => '#{ENV['FALCON_CID']}',
@@ -318,11 +365,17 @@ describe 'install falcon' do
     describe 'specific version' do
       context 'install specific version' do
         manifest = <<-MANIFEST
+          file { '/tmp/stage':
+            ensure => 'directory',
+            before => Class['falcon'],
+          }
+
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
             cid => '#{ENV['FALCON_CID']}',
             client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
             client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            sensor_tmp_dir => '/tmp/stage',
             version => '#{ENV['LINUX_SENSOR_VERSION']}',
           }
           MANIFEST
