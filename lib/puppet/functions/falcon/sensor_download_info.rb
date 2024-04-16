@@ -27,13 +27,13 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
   dispatch :sensor_download_info do
     param 'Sensitive', :client_id
     param 'Sensitive', :client_secret
-    param 'String', :proxy_host
-    param 'Integer', :proxy_port
     param 'Hash', :options
+    optional_param 'Variant[String, Undef]', :proxy_host
+    optional_param 'Variant[Integer, Undef]', :proxy_port
     return_type 'Hash'
   end
 
-  def sensor_download_info(client_id, client_secret, proxy_host, proxy_port, options)
+  def sensor_download_info(client_id, client_secret, options, proxy_host, proxy_port)
     scope = closure_scope
 
     platform_name = platform(scope)

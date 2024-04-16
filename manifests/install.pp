@@ -17,8 +17,7 @@ class falcon::install {
         'sensor_tmp_dir' => $falcon::sensor_tmp_dir,
         'version_decrement' => $falcon::version_decrement,
       }
-
-      $info = falcon::sensor_download_info($falcon::client_id, $falcon::client_secret, $falcon::sensor_dl_proxy_host, $falcon::sensor_dl_proxy_port, $config) # lint:ignore:140chars     
+      $info = falcon::sensor_download_info($falcon::client_id, $falcon::client_secret, $config, $falcon::sensor_dl_proxy_host, $falcon::sensor_dl_proxy_port) # lint:ignore:140chars
 
       if $falcon::version_manage or ($facts['falcon'].dig('version') in ['absent', undef]) {
         sensor_download { 'Download Sensor Package':
