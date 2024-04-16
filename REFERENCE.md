@@ -76,6 +76,8 @@ The following parameters are available in the `falcon` class:
 * [`proxy_host`](#-falcon--proxy_host)
 * [`proxy_port`](#-falcon--proxy_port)
 * [`proxy_enabled`](#-falcon--proxy_enabled)
+* [`sensor_dl_proxy_host`](#-falcon--sensor_dl_proxy_host)
+* [`sensor_dl_proxy_port`](#-falcon--sensor_dl_proxy_port)
 * [`tags`](#-falcon--tags)
 * [`tag_membership`](#-falcon--tag_membership)
 
@@ -310,6 +312,22 @@ Whether proxy is enabled. Defaults to `undef`.
 
 Default value: `$falcon::params::proxy_enabled`
 
+##### <a name="-falcon--sensor_dl_proxy_host"></a>`sensor_dl_proxy_host`
+
+Data type: `Optional[String]`
+
+The proxy host to use when downloading the falcon sensor. Defaults to `undef`.
+
+Default value: `$falcon::params::sensor_dl_proxy_host`
+
+##### <a name="-falcon--sensor_dl_proxy_port"></a>`sensor_dl_proxy_port`
+
+Data type: `Optional[Numeric]`
+
+The proxy port to use when downloading the falcon sensor. Defaults to `undef`.
+
+Default value: `$falcon::params::sensor_dl_proxy_port`
+
 ##### <a name="-falcon--tags"></a>`tags`
 
 Data type: `Optional[Array[String]]`
@@ -419,6 +437,8 @@ The following parameters are available in the `sensor_download` type.
 * [`falcon_cloud`](#-sensor_download--falcon_cloud)
 * [`file_path`](#-sensor_download--file_path)
 * [`provider`](#-sensor_download--provider)
+* [`proxy_host`](#-sensor_download--proxy_host)
+* [`proxy_port`](#-sensor_download--proxy_port)
 * [`sha256`](#-sensor_download--sha256)
 * [`version`](#-sensor_download--version)
 * [`version_manage`](#-sensor_download--version_manage)
@@ -439,6 +459,14 @@ The full path to the file.
 
 The specific backend to use for this `sensor_download` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
+
+##### <a name="-sensor_download--proxy_host"></a>`proxy_host`
+
+The proxy host to use for downloading the sensor package
+
+##### <a name="-sensor_download--proxy_port"></a>`proxy_port`
+
+The proxy port to use for downloading the sensor package
 
 ##### <a name="-sensor_download--sha256"></a>`sha256`
 
