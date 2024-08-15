@@ -96,6 +96,34 @@ describe 'install falcon' do
           it { is_expected.to be_installed }
         end
       end
+
+      context 'update_policy=platform_default and version_manage=true' do
+        manifest = <<-MANIFEST
+          file { '/tmp/stage':
+            ensure => 'directory',
+            before => Class['falcon'],
+          }
+
+          class { 'falcon':
+            falcon_cloud => 'api.us-2.crowdstrike.com',
+            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
+            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            update_policy => 'platform_default',
+            sensor_tmp_dir => '/tmp/stage',
+            version_manage => true
+            cid => '#{ENV['FALCON_CID']}',
+          }
+        MANIFEST
+
+        it 'applies idempotently' do
+          apply_manifest(manifest, { catch_failures: true, debug: true })
+          apply_manifest(manifest, { catch_changes: true, debug: true })
+        end
+
+        describe package('falcon-sensor') do
+          it { is_expected.to be_installed }
+        end
+      end
     end
 
     describe 'proxy settings' do
