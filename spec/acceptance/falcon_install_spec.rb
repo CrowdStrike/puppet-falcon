@@ -110,7 +110,7 @@ describe 'install falcon' do
             client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
             update_policy => 'platform_default',
             sensor_tmp_dir => '/tmp/stage',
-            version_manage => true
+            version_manage => true,
             cid => '#{ENV['FALCON_CID']}',
           }
         MANIFEST
