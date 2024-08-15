@@ -34,7 +34,7 @@ class FalconApi
                     end
     @client_id = client_id
     @client_secret = client_secret
-    @module_version = 'v0.10.0'
+    @module_version = 'v0.11.0'
   end
 
   # Returns the version of the sensor installer for the given policy and platform name.
