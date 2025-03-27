@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v0.12.0](https://github.com/CrowdStrike/puppet-falcon/tree/v0.12.0) - 2025-03-27
+
+[Full Changelog](https://github.com/CrowdStrike/puppet-falcon/compare/v0.11.0...v0.12.0)
+
+### Other
+
+- Update metadata.json [#98](https://github.com/CrowdStrike/puppet-falcon/pull/98) ([ffalor](https://github.com/ffalor))
+
 ## [v0.11.0](https://github.com/CrowdStrike/puppet-falcon/tree/v0.11.0) - 2024-08-15
 
 [Full Changelog](https://github.com/CrowdStrike/puppet-falcon/compare/v0.10.0...v0.11.0)
