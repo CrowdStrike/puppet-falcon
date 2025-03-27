@@ -19,7 +19,7 @@ Puppet::Type.type(:sensor_download).provide(:default) do
   def exists?
     falcon_fact = Facter.value('falcon')
     Puppet.debug("Falcon fact: #{falcon_fact}")
-    falcon_version = falcon_fact&.fetch("version", :absent)
+    falcon_version = falcon_fact&.fetch('version', :absent)
 
     installed = [:absent, :purged, :undef, nil].include?(falcon_version) ? false : true
 
