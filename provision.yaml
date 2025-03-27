@@ -2,28 +2,31 @@
 local:
   provisioner: docker
   images:
-    - "ghcr.io/ffalor/ubuntu:20.04"
+    - "litmusimage/ffalor/ubuntu:20.04"
 
 linux:
   provisioner: docker
   images:
-    - "ghcr.io/ffalor/centos:7"
-    - "ghcr.io/ffalor/centos:stream8"
-    - "ghcr.io/ffalor/centos:stream9"
-    - "ghcr.io/ffalor/debian:10"
-    - "ghcr.io/ffalor/debian:11"
-    - "ghcr.io/ffalor/ubuntu:18.04"
-    - "ghcr.io/ffalor/ubuntu:20.04"
-    - "ghcr.io/ffalor/ubuntu:22.04"
-    - "ghcr.io/ffalor/oraclelinux:6"
-    - "ghcr.io/ffalor/oraclelinux:7"
-    - "ghcr.io/ffalor/oraclelinux:8"
-    - "ghcr.io/ffalor/scientificlinux:7"
-    - "ghcr.io/ffalor/rockylinux:8"
-    - "ghcr.io/ffalor/rockylinux:9"
-    - "ghcr.io/ffalor/almalinux:8"
-    - "ghcr.io/ffalor/almalinux:9"
-    - "ghcr.io/ffalor/amazonlinux:2"
+    - "litmusimage/centos:stream8"
+    - "litmusimage/centos:stream9"
+    - "litmusimage/debian:10"
+    - "litmusimage/debian:11"
+    - "litmusimage/debian:12"
+    - "litmusimage/ubuntu:18.04"
+    - "litmusimage/ubuntu:20.04"
+    - "litmusimage/ubuntu:22.04"
+    - "litmusimage/ubuntu:24.04"
+    - "litmusimage/oraclelinux:7"
+    - "litmusimage/oraclelinux:8"
+    - "litmusimage/oraclelinux:9"
+    - "litmusimage/scientificlinux:7"
+    - "litmusimage/rockylinux:8"
+    - "litmusimage/rockylinux:9"
+    - "litmusimage/almalinux:8"
+    - "litmusimage/almalinux:9"
+    - "litmusimage/amazonlinux:2"
+    - "litmusimage/amazonlinux:2023"
+    - "litmusimage/sles:15"
 
 windows:
   provisioner: vagrant
