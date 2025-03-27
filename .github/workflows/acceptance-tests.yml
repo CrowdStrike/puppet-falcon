@@ -100,7 +100,7 @@ jobs:
           repository: ${{needs.setup_matrix.outputs.repository}}
     - name: Cache Vagrant boxes
       if: ${{ matrix.platforms.provider == 'vagrant' }}
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ~/.vagrant.d/boxes
         key: ${{ runner.os }}-vagrant-${{ hashFiles('./.github/workflows/pr_acceptance_test.yml') }}
