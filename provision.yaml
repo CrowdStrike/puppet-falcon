@@ -11,7 +11,7 @@ linux:
     - "litmusimage/centos:stream9"
     - "litmusimage/debian:10"
     - "litmusimage/debian:11"
-    - "litmusimage/debian:122"
+    - "litmusimage/debian:12"
     - "litmusimage/ubuntu:18.04"
     - "litmusimage/ubuntu:20.04"
     - "litmusimage/ubuntu:22.04"
