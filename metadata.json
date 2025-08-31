@@ -20,14 +20,16 @@
     {
       "operatingsystem": "Amazon",
       "operatingsystemrelease": [
-        "2"
+        "2",
+        "2023"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
         "7",
-        "8"
+        "8",
+        "9"
       ]
     },
     {
@@ -41,7 +43,8 @@
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "7",
-        "8"
+        "8",
+        "9"
       ]
     },
     {
@@ -53,8 +56,10 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
+        "9",
         "10",
-        "11"
+        "11",
+        "12"
       ]
     },
     {
@@ -70,8 +75,10 @@
     {
       "operatingsystem": "Windows",
       "operatingsystemrelease": [
+        "2016",
         "2019",
-        "2016"
+        "2022",
+        "2025"
       ]
     }
   ],
