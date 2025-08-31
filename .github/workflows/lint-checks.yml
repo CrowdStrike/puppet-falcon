@@ -8,7 +8,7 @@ on:
 jobs:
   pdk_validate:
     name: "Run Puppet Linters"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
         uses: actions/checkout@v2
