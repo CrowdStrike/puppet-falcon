@@ -34,7 +34,7 @@ def matrix_os(provisioner):
     if provisioner == 'vagrant':
         return 'macos-10.15'
 
-    return 'ubuntu-20.04'
+    return 'ubuntu-latest'
 
 
 try:
