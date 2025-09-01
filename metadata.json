@@ -1,6 +1,6 @@
 {
   "name": "crowdstrike-falcon",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "author": "crowdstrike",
   "summary": "Module to manage CrowdStrike Falcon Sensor",
   "license": "MIT",

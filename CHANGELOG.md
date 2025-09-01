@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v0.13.0](https://github.com/CrowdStrike/puppet-falcon/tree/v0.13.0) - 2025-09-01
+
+[Full Changelog](https://github.com/CrowdStrike/puppet-falcon/compare/v0.12.0...v0.13.0)
+
+### Other
+
+- Add new OS releases to metadata.json [#108](https://github.com/CrowdStrike/puppet-falcon/pull/108) ([ffalor](https://github.com/ffalor))
+- Add Ubuntu 22.04 to metadata [#107](https://github.com/CrowdStrike/puppet-falcon/pull/107) ([bwitt](https://github.com/bwitt))
+- Update labeler conffile [#106](https://github.com/CrowdStrike/puppet-falcon/pull/106) ([bwitt](https://github.com/bwitt))
+- Update pipeline [#100](https://github.com/CrowdStrike/puppet-falcon/pull/100) ([ffalor](https://github.com/ffalor))
+
 ## [v0.12.0](https://github.com/CrowdStrike/puppet-falcon/tree/v0.12.0) - 2025-03-27
 
 [Full Changelog](https://github.com/CrowdStrike/puppet-falcon/compare/v0.11.0...v0.12.0)
