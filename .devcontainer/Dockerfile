@@ -1,3 +1,3 @@
-FROM ghcr.io/ffalor/puppet:main
+FROM docker.io/puppet/pdk:latest
 
 RUN apt-get update
