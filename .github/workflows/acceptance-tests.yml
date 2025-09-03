@@ -18,7 +18,7 @@ on:
       paths:
         - 'lib/**'
         - 'manifests/**'
-        - '.github/workflows/pr_acceptance_test.yml'
+        - '.github/workflows/acceptance_test.yml'
 
 concurrency:
   group: ${{ github.ref }}
@@ -48,8 +48,8 @@ jobs:
         REF: ${{github.event.pull_request.head.sha}}
         REPOSITORY: ${{github.event.pull_request.head.repo.full_name}}
       run: |
-          echo ::set-output name=ref::${REF}
-          echo ::set-output name=repository::${REPOSITORY}
+          echo "ref=${REF}" >> $GITHUB_OUTPUT
+          echo "repository=${REPOSITORY}" >> $GITHUB_OUTPUT
     - name: Print git vars
       run: |
         echo ${{ steps.git-vars.outputs.ref}}
@@ -103,7 +103,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.vagrant.d/boxes
-        key: ${{ runner.os }}-vagrant-${{ hashFiles('./.github/workflows/pr_acceptance_test.yml') }}
+        key: ${{ runner.os }}-vagrant-${{ hashFiles('./.github/workflows/acceptance_test.yml') }}
         restore-keys: |
           ${{ runner.os }}-vagrant-
     - name: Activate Ruby 3.2

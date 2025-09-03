@@ -1,17 +1,22 @@
 {
-	"name": "Puppet Agent, PDK, Bolt",
-	"dockerFile": "Dockerfile",
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"puppet.puppet-vscode",
-		"misogi.ruby-rubocop",
-		"castwide.solargraph"
-	],
-	"settings": {
-		"[ruby]": {
-			"editor.defaultFormatter": "misogi.ruby-rubocop"
-		},
-		"ruby.rubocop.suppressRubocopWarnings": true,
+	"name": "PDK",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"puppet.puppet-vscode",
+				"misogi.ruby-rubocop",
+				"castwide.solargraph"
+			],
+			"settings": {
+				"[ruby]": {
+					"editor.defaultFormatter": "rebornix.ruby"
+				},
+				"ruby.rubocop.suppressRubocopWarnings": true
+			}
+		}
 	},
 	"features": {
 		"docker-in-docker": {
@@ -20,7 +25,7 @@
 		"sshd": "latest"
 	},
 	"mounts": [
-		"source=${localWorkspaceFolder},target=/etc/puppetlabs/code/environments/production/modules/falcon,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder},target=/etc/puppetlabs/code/environments/production/modules/falcon,type=bind,consistency=cached"
 	],
 	"postStartCommand": "pdk bundle install"
 }

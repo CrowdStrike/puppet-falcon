@@ -91,4 +91,6 @@ if matrix['collections'] == []:
     print(
         f"::error ::Empy collection list. Check the provision.yaml file. {args.path} or pass in valid puppet collections with -c")
 
-print("::set-output name=matrix::" + json.dumps(matrix))
+import os
+with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+    f.write(f"matrix={json.dumps(matrix)}\n")
