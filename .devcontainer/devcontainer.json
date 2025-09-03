@@ -1,5 +1,5 @@
 {
-	"name": "Puppet Agent, PDK, Bolt",
+	"name": "PDK",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
