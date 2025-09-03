@@ -54,10 +54,10 @@ jobs:
       run: |
         echo ${{ steps.git-vars.outputs.ref}}
         echo ${{ steps.git-vars.outputs.repository}}
-    - name: Activate Ruby 2.7
+    - name: Activate Ruby 3.2
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: "2.7"
+        ruby-version: "3.2"
         bundler-cache: true
     - name: Print bundle environment
       run: | 
@@ -106,10 +106,10 @@ jobs:
         key: ${{ runner.os }}-vagrant-${{ hashFiles('./.github/workflows/acceptance_test.yml') }}
         restore-keys: |
           ${{ runner.os }}-vagrant-
-    - name: Activate Ruby 2.7
+    - name: Activate Ruby 3.2
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: "2.7"
+        ruby-version: "3.2"
         bundler-cache: true
     - name: Print bundle environment
       run: |

@@ -11,5 +11,7 @@ on:
         - '.github/workflows/unit-test.yml'
 jobs:
   Spec:
-    uses: "puppetlabs/cat-github-actions/.github/workflows/module_ci.yml@a18620f889f9b80be693ceb62fed9067de370c94"
+    uses: "puppetlabs/cat-github-actions/.github/workflows/module_ci.yml@f4a6a10198ad1139b984854f2047840cc400f604"
+    with:
+      ruby_version: "3.2"
     secrets: "inherit"
