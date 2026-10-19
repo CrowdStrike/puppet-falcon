@@ -70,7 +70,7 @@ class falcon::install {
         'APP_PROXYNAME' => $falcon::proxy_host,
         'APP_PROXYPORT' => $falcon::proxy_port,
         'PROXYDISABLE' => $falcon::proxy_enabled,
-      }
+      } + $falcon::install_args
 
       $_package_options = {
         'install_options' => ['/install', '/quiet', '/norestart'] + falcon::win_install_options($install_args),

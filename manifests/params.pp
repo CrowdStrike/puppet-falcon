@@ -12,6 +12,7 @@ class falcon::params {
     'windows' => 'CrowdStrike Windows Sensor'
   }
   $package_options = {}
+  $install_args = {}
   $install_method = 'api'
   $cleanup_installer = true
   $version_manage = false

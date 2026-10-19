@@ -158,6 +158,24 @@ describe 'falcon' do
 
                 it { is_expected.to contain_package('falcon').with_install_options(['test']) }
               end
+
+              context 'when install_args is defined' do
+                let(:params) do
+                  super().merge(
+                      package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name },
+                      install_args: { 'GROUPING_TAGS' => 'FOO' },
+                    )
+                end
+
+                it 'merges install options from install_args' do
+                  is_expected.to contain_package('falcon').with_install_options(
+                    [
+                      '/install', '/quiet', '/norestart',
+                      "CID=#{cid}", 'GROUPING_TAGS=FOO'
+                    ],
+                  )
+                end
+              end
             end
           end
         end

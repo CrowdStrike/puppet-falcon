@@ -101,6 +101,9 @@
 # @param package_options
 #  Allows you to override any package attribute. Defaults to `{}`.
 #
+# @param install_args
+#   Additional Windows install arguments.  Defaults to `{}`.
+#
 # @param service_enable
 #  Whether to enable the service. Defaults to `true`.
 #
@@ -166,6 +169,7 @@ class falcon (
   Optional[Numeric] $version_decrement           = $falcon::params::version_decrement,
   Optional[Enum['api', 'local']] $install_method = $falcon::params::install_method,
   Hash[String, Any] $package_options             = $falcon::params::package_options,
+  Hash[String, Any] $install_args                = $falcon::params::install_args,
   Optional[String] $sensor_dl_proxy_host         = $falcon::params::sensor_dl_proxy_host,
   Optional[Numeric] $sensor_dl_proxy_port        = $falcon::params::sensor_dl_proxy_port,
 
