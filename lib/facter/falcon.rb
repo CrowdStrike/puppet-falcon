@@ -76,6 +76,8 @@ Facter.add(:falcon, type: :aggregate) do
                    'falcon'
                  end
 
+      Puppet::Resource.indirection.terminus_class = :compiler
+      Puppet::Resource.indirection.cache_class = :store_configs
       pkg_ensure = Puppet::Resource.indirection.find("package/#{pkg_name}").to_hash[:ensure]
 
       Puppet.debug("#{pkg_name} returned ensure: #{pkg_ensure}")
