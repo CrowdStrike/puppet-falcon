@@ -139,6 +139,18 @@
 #  `inclusive` will ensure the sensor has only the tags specified in `tags` removing any tags that are not specified. `minimum` will
 #  ensure the sensor has the tags specified in `tags` but will not remove any existing tags. Defaults to `minimum`.
 #
+# @param maintenance_token
+#  A pre-generated maintenance token used to temporarily bypass tamper protection while the module changes the
+#  sensor configuration or manages the service. Linux only. Defaults to `undef`.
+#
+#  Takes precedence over `maintenance_token_api`.
+#
+# @param maintenance_token_api
+#  Retrieve a maintenance token from the Falcon API at apply time using `client_id` and `client_secret`
+#  (requires the `Sensor update policies: Write` scope). Linux only. Defaults to `false`.
+#
+#  The token is only retrieved when the sensor is installed, and is cleared again at the end of the run.
+#
 class falcon (
   # falcon::config
   Optional[Variant[Sensitive[String], String]] $cid = $falcon::params::cid,
@@ -169,6 +181,10 @@ class falcon (
   Optional[String] $sensor_dl_proxy_host         = $falcon::params::sensor_dl_proxy_host,
   Optional[Numeric] $sensor_dl_proxy_port        = $falcon::params::sensor_dl_proxy_port,
 
+  # falcon::maintenance
+  Optional[Sensitive[String]] $maintenance_token = $falcon::params::maintenance_token,
+  Boolean $maintenance_token_api                 = $falcon::params::maintenance_token_api,
+
   # falcon::service
   Optional[Boolean] $service_manage              = $falcon::params::service_manage,
   Optional[Boolean] $service_enable              = $falcon::params::service_enable,
@@ -177,10 +193,14 @@ class falcon (
 
 ) inherits falcon::params {
   contain falcon::install
+  contain falcon::maintenance
   contain falcon::config
   contain falcon::service
+  contain falcon::maintenance_cleanup
 
   Class['falcon::install']
+  -> Class['falcon::maintenance']
   -> Class['falcon::config']
   ~> Class['falcon::service']
+  -> Class['falcon::maintenance_cleanup']
 }

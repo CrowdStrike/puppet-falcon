@@ -5,11 +5,7 @@ require 'cgi'
 
 # FalconApi class to interact with the falcon api related to sensor downloads.
 class FalconApi
-  attr_accessor :falcon_cloud
-  attr_accessor :bearer_token
-  attr_accessor :update_policy
-  attr_accessor :platform_name
-  attr_accessor :module_version
+  attr_accessor :falcon_cloud, :bearer_token, :update_policy, :platform_name, :module_version
 
   # Initialize a new FalconApi instance.
   # - falcon_cloud - the name of the falcon cloud to use.
@@ -19,9 +15,7 @@ class FalconApi
   # - proxy_host - the proxy host to use for the http client.
   # - proxy_port - the proxy port to use for the http client.
   def initialize(falcon_cloud:, bearer_token: nil, client_id: nil, client_secret: nil, proxy_host: nil, proxy_port: nil)
-    if (client_id.nil? || client_secret.nil?) && bearer_token.nil?
-      raise ArgumentError, 'client_id and client_secret or bearer_token must be provided'
-    end
+    raise ArgumentError, 'client_id and client_secret or bearer_token must be provided' if (client_id.nil? || client_secret.nil?) && bearer_token.nil?
 
     @falcon_cloud = falcon_cloud
     @proxy_host = proxy_host
@@ -52,17 +46,13 @@ class FalconApi
     resp = @http_client.request(request)
 
     case resp
-    when Net::HTTPSuccess, Net::HTTPRedirection then
+    when Net::HTTPSuccess, Net::HTTPRedirection
 
       body = JSON.parse(resp.read_body)
 
-      if body['resources'].nil? || body['resources'].empty?
-        raise ArgumentError, "Policy: '#{update_policy}' not found for Platform: '#{platform_name}'"
-      end
+      raise ArgumentError, "Policy: '#{update_policy}' not found for Platform: '#{platform_name}'" if body['resources'].nil? || body['resources'].empty?
 
-      unless body['resources'][0]['settings'].key?('sensor_version')
-        raise Puppet::Error, "Policy: '#{update_policy}' and Platform: '#{platform_name}' returned zero installer versions"
-      end
+      raise Puppet::Error, "Policy: '#{update_policy}' and Platform: '#{platform_name}' returned zero installer versions" unless body['resources'][0]['settings'].key?('sensor_version')
 
       body['resources'][0]['settings']['sensor_version']
     else
@@ -86,14 +76,38 @@ class FalconApi
     resp = @http_client.request(request)
 
     case resp
-    when Net::HTTPSuccess, Net::HTTPRedirection then
+    when Net::HTTPSuccess, Net::HTTPRedirection
       body = JSON.parse(resp.read_body)
 
-      if body['resources'].nil? || body['resources'].empty?
-        raise Puppet::Error, "No installers found for query: '#{query}'"
-      end
+      raise Puppet::Error, "No installers found for query: '#{query}'" if body['resources'].nil? || body['resources'].empty?
 
       body['resources']
+    else
+      raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
+    end
+  end
+
+  # Returns a maintenance token used to disable tamper protection on a sensor.
+  # - device_id - the sensor AID, or 'MAINTENANCE' (default) for the bulk maintenance token.
+  # - audit_message - message recorded in the Falcon audit log.
+  def maintenance_token(device_id = 'MAINTENANCE', audit_message = 'Requested by puppet-falcon')
+    url_path = '/policy/combined/reveal-uninstall-token/v1'
+
+    request = Net::HTTP::Post.new(url_path)
+    request['Content-Type'] = 'application/json'
+    request['Authorization'] = "Bearer #{@bearer_token.respond_to?(:unwrap) ? @bearer_token.unwrap : @bearer_token}"
+    request['User-Agent'] = "crowdstrike-puppet/#{@module_version}"
+    request.body = { audit_message: audit_message, device_id: device_id }.to_json
+
+    resp = @http_client.request(request)
+
+    case resp
+    when Net::HTTPSuccess
+      body = JSON.parse(resp.read_body)
+      token = body['resources']&.first&.fetch('uninstall_token', nil)
+      raise Puppet::Error, 'Falcon API returned no maintenance token' if token.nil? || token.empty?
+
+      token
     else
       raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
     end
@@ -113,10 +127,8 @@ class FalconApi
     resp = @http_client.request(request)
 
     case resp
-    when Net::HTTPSuccess, Net::HTTPRedirection then
-      File.open(out_path, 'wb') do |file|
-        file.write(resp.read_body)
-      end
+    when Net::HTTPSuccess, Net::HTTPRedirection
+      File.binwrite(out_path, resp.read_body)
     else
       raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
     end
@@ -128,9 +140,7 @@ class FalconApi
   # Ensure error message does not include client_id, client_secret, or bearer_token.
   def sanitize_error_message(message)
     [@client_id, @client_secret, @bearer_token].each do |value|
-      if value.is_a?(Puppet::Pops::Types::PSensitiveType::Sensitive)
-        value = value.unwrap
-      end
+      value = value.unwrap if value.is_a?(Puppet::Pops::Types::PSensitiveType::Sensitive)
       message.gsub!(value, '<REDACTED>') if !value.nil? && !value.empty?
     end
     message
@@ -154,7 +164,7 @@ class FalconApi
 
     req_body = {
       client_id: client_id.unwrap,
-      client_secret: client_secret.unwrap
+      client_secret: client_secret.unwrap,
     }
 
     request = Net::HTTP::Post.new(url_path)
@@ -165,10 +175,11 @@ class FalconApi
     resp = @http_client.request(request)
 
     case resp
-    when Net::HTTPSuccess then
+    when Net::HTTPSuccess
       Puppet::Pops::Types::PSensitiveType::Sensitive.new(JSON.parse(resp.read_body)['access_token'])
-    when Net::HTTPRedirection then
-      raise Puppet::Error, sanitize_error_message("Error - incorrect value for falcon_cloud: #{@falcon_cloud}. Update the falcon_cloud property with the correct cloud: #{resp.header['Location'].split('/')[2]}")
+    when Net::HTTPRedirection
+      raise Puppet::Error,
+            sanitize_error_message("Error - incorrect value for falcon_cloud: #{@falcon_cloud}. Update the falcon_cloud property with the correct cloud: #{resp.header['Location'].split('/')[2]}")
     else
       raise Puppet::Error, sanitize_error_message("Falcon API error when calling #{url_path} - #{resp.code} #{resp.message} #{resp.body}")
     end

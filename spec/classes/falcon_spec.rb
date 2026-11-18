@@ -44,16 +44,16 @@ describe 'falcon' do
 
   let(:installers_response) do
     {
-      "resources": [
+      resources: [
         {
-          "name": 'falcon-sensor-4.1.0-4404.amzn1.x86_64.rpm',
-          "sha256": '704992dcd6802279fe02ea5d3707ee8d304439d702481bcee4cd369dbbfc517f',
-          "version": '4.1.4404',
+          name: 'falcon-sensor-4.1.0-4404.amzn1.x86_64.rpm',
+          sha256: '704992dcd6802279fe02ea5d3707ee8d304439d702481bcee4cd369dbbfc517f',
+          version: '4.1.4404',
         },
         {
-          "name": 'falcon-sensor-4.2.0-4404.amzn1.x86_64.rpm',
-          "sha256": '704992dcd6802279fe02ea5d3707ee8d304439d702481bcee4cd369dbbfc3333',
-          "version": '3.9.4404',
+          name: 'falcon-sensor-4.2.0-4404.amzn1.x86_64.rpm',
+          sha256: '704992dcd6802279fe02ea5d3707ee8d304439d702481bcee4cd369dbbfc3333',
+          version: '3.9.4404',
         },
       ],
     }
@@ -84,8 +84,8 @@ describe 'falcon' do
       if os_facts[:kernel] == 'windows'
         let(:params) do
           super().merge(
-              cid: cid,
-            )
+            cid: cid,
+          )
         end
       end
 
@@ -96,13 +96,15 @@ describe 'falcon' do
         it { is_expected.to contain_class('falcon::config') }
         it { is_expected.to contain_class('falcon::service').that_subscribes_to('Class[falcon::config]') }
         it { is_expected.to contain_class('falcon::params') }
+        it { is_expected.to contain_class('falcon::maintenance') }
+        it { is_expected.to contain_class('falcon::maintenance_cleanup') }
       end
 
       describe 'falcon::install' do
         let(:params) do
           super().merge(
-              cid: cid,
-            )
+            cid: cid,
+          )
         end
 
         context 'when install_method=local' do
@@ -111,9 +113,9 @@ describe 'falcon' do
 
           let(:params) do
             super().merge(
-                install_method: 'local',
-                package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name },
-              )
+              install_method: 'local',
+              package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name },
+            )
           end
 
           it { is_expected.to compile.with_all_deps }
@@ -152,8 +154,8 @@ describe 'falcon' do
               context 'allow install_options to be overridden' do
                 let(:params) do
                   super().merge(
-                      package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name, 'install_options' => ['test'] },
-                    )
+                    package_options: { 'ensure' => ensure_param, 'source' => source_param, 'name' => package_name, 'install_options' => ['test'] },
+                  )
                 end
 
                 it { is_expected.to contain_package('falcon').with_install_options(['test']) }
@@ -211,8 +213,8 @@ describe 'falcon' do
               context 'allow install_options to be overridden' do
                 let(:params) do
                   super().merge(
-                      package_options: { 'install_options' => ['test'] },
-                    )
+                    package_options: { 'install_options' => ['test'] },
+                  )
                 end
 
                 it { is_expected.to contain_package('falcon').with_install_options(['test']) }
@@ -368,6 +370,39 @@ describe 'falcon' do
         if os_facts[:kernel] == 'windows'
           context 'on windows' do
             it { is_expected.not_to contain_falconctl('falcon') }
+          end
+        end
+      end
+
+      describe 'falcon::maintenance' do
+        it { is_expected.not_to contain_falcon_maintenance_token('falcon') }
+        it { is_expected.not_to contain_falcon_maintenance_token('falcon cleanup') }
+
+        if os_facts[:kernel] == 'Linux'
+          context 'with maintenance_token' do
+            let(:params) { super().merge('maintenance_token' => sensitive('token')) }
+
+            it { is_expected.to compile.with_all_deps }
+            it { is_expected.to contain_falcon_maintenance_token('falcon').with_ensure('present').that_requires('Class[falcon::install]').that_comes_before('Class[falcon::config]') }
+            it { is_expected.to contain_falcon_maintenance_token('falcon cleanup').with_ensure('absent').that_requires('Class[falcon::service]') }
+          end
+
+          context 'with maintenance_token_api' do
+            let(:params) { super().merge('maintenance_token_api' => true) }
+
+            it { is_expected.to contain_falcon_maintenance_token('falcon').with_ensure('present') }
+          end
+
+          context 'with maintenance_token_api and no credentials' do
+            let(:params) { { 'maintenance_token_api' => true, 'install_method' => 'local' } }
+
+            it { is_expected.to compile.and_raise_error(%r{client_id and client_secret are required}) }
+          end
+        else
+          context 'with maintenance_token on unsupported kernel' do
+            let(:params) { super().merge('maintenance_token' => sensitive('token')) }
+
+            it { is_expected.to compile.and_raise_error(%r{only supported on Linux}) }
           end
         end
       end

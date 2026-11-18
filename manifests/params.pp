@@ -42,6 +42,10 @@ class falcon::params {
   $tags = undef
   $tag_membership = 'minimum'
 
+  # falcon::maintenance
+  $maintenance_token = undef
+  $maintenance_token_api = false
+
   # falcon::service
   $service_manage = true
   $service_ensure = 'running'
