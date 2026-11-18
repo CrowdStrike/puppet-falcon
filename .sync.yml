@@ -10,5 +10,6 @@ Gemfile:
   optional:
     ':development':
       - gem: 'puppet-resource_api'
+      - gem: 'webmock'
 spec/spec_helper.rb:
   mock_with: ':rspec'

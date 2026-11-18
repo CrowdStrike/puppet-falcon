@@ -226,6 +226,36 @@ class {'falcon':
 
 ---
 
+### Managing sensors with tamper protection enabled - _Linux Only_
+
+When tamper protection is enabled, changing the sensor configuration or managing the service requires a maintenance token. The module can apply one temporarily during the Puppet run and clears it again afterwards.
+
+Pass a pre-generated token:
+
+```puppet
+class {'falcon':
+  maintenance_token => Sensitive('<maintenance_token>'),
+  # ... other required params
+}
+```
+
+Or have the agent retrieve the bulk maintenance token from the Falcon API (requires `client_id` and `client_secret` with the `Sensor update policies: Write` scope). The token is only requested when the sensor is installed:
+
+```puppet
+class {'falcon':
+  maintenance_token_api => true,
+  client_id             => Sensitive('<client_id>'),
+  client_secret         => Sensitive('<client_secret>'),
+  # ... other required params
+}
+```
+
+If both are set, `maintenance_token` is used. If retrieval or applying the token fails, the run fails for the sensor config and service resources.
+
+> **Note** The token is applied while changes run, so each Puppet run reports the apply/clear as changes when this feature is enabled.
+
+---
+
 ### Opt out of the module controlling the service
 
 ```puppet

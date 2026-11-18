@@ -52,14 +52,15 @@ Puppet::Type.newtype(:falconctl) do
     def change_to_s(currentvalue, newvalue)
       if @resource[:tag_membership] == :minimum
         newvalue = currentvalue + (newvalue - currentvalue)
-        return super(currentvalue, newvalue)
+        return super
       end
-      super(currentvalue, newvalue)
+      super
     end
 
     def insync?(is)
       return false if @resource[:tag_membership] == :inclusive && should == [] && is != []
-      super(is)
+
+      super
     end
   end
 

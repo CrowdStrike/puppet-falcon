@@ -27,9 +27,9 @@ describe 'install falcon' do
 
             class { 'falcon':
               falcon_cloud => 'api.us-2.crowdstrike.com',
-              client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
-              client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
-              cid => '#{ENV['FALCON_CID']}',
+              client_id => Sensitive('#{ENV.fetch('FALCON_CLIENT_ID', nil)}'),
+              client_secret => Sensitive('#{ENV.fetch('FALCON_CLIENT_SECRET', nil)}'),
+              cid => '#{ENV.fetch('FALCON_CID', nil)}',
               sensor_tmp_dir => '/tmp/stage',
               version_decrement => #{version_decrement},
             }
@@ -79,11 +79,11 @@ describe 'install falcon' do
 
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV.fetch('FALCON_CLIENT_ID', nil)}'),
+            client_secret => Sensitive('#{ENV.fetch('FALCON_CLIENT_SECRET', nil)}'),
             update_policy => 'platform_default',
             sensor_tmp_dir => '/tmp/stage',
-            cid => '#{ENV['FALCON_CID']}',
+            cid => '#{ENV.fetch('FALCON_CID', nil)}',
           }
         MANIFEST
 
@@ -106,12 +106,12 @@ describe 'install falcon' do
 
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV.fetch('FALCON_CLIENT_ID', nil)}'),
+            client_secret => Sensitive('#{ENV.fetch('FALCON_CLIENT_SECRET', nil)}'),
             update_policy => 'platform_default',
             sensor_tmp_dir => '/tmp/stage',
             version_manage => true,
-            cid => '#{ENV['FALCON_CID']}',
+            cid => '#{ENV.fetch('FALCON_CID', nil)}',
           }
         MANIFEST
 
@@ -136,13 +136,13 @@ describe 'install falcon' do
 
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV.fetch('FALCON_CLIENT_ID', nil)}'),
+            client_secret => Sensitive('#{ENV.fetch('FALCON_CLIENT_SECRET', nil)}'),
             proxy_port => 8080,
             proxy_host => 'proxy.example.com',
             proxy_enabled => true,
             sensor_tmp_dir => '/tmp/stage',
-            cid => '#{ENV['FALCON_CID']}',
+            cid => '#{ENV.fetch('FALCON_CID', nil)}',
           }
         MANIFEST
 
@@ -152,9 +152,9 @@ describe 'install falcon' do
         end
 
         describe 'proxy port' do
-          subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --app') }
-
           subject(:facts) { command('puppet facts falcon') }
+
+          let(:falconctl) { command('/opt/CrowdStrike/falconctl -g --app') }
 
           it 'is a fact' do
             expect(facts.exit_status).to eq 0
@@ -168,9 +168,9 @@ describe 'install falcon' do
         end
 
         describe 'proxy host' do
-          subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --aph') }
-
           subject(:facts) { command('puppet facts falcon') }
+
+          let(:falconctl) { command('/opt/CrowdStrike/falconctl -g --aph') }
 
           it 'is a fact' do
             expect(facts.exit_status).to eq 0
@@ -184,13 +184,13 @@ describe 'install falcon' do
         end
 
         describe 'proxy enabled' do
-          subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --apd') }
-
           subject(:facts) { command('puppet facts falcon') }
+
+          let(:falconctl) { command('/opt/CrowdStrike/falconctl -g --apd') }
 
           it 'is a fact' do
             expect(facts.exit_status).to eq 0
-            expect(JSON.parse(facts.stdout)['falcon']['proxy']['enabled']).to eq true
+            expect(JSON.parse(facts.stdout)['falcon']['proxy']['enabled']).to be true
           end
 
           it 'is set in falconctl' do
@@ -213,11 +213,11 @@ describe 'install falcon' do
 
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV.fetch('FALCON_CLIENT_ID', nil)}'),
+            client_secret => Sensitive('#{ENV.fetch('FALCON_CLIENT_SECRET', nil)}'),
             sensor_tmp_dir => '/tmp/stage',
             proxy_enabled => false,
-            cid => '#{ENV['FALCON_CID']}',
+            cid => '#{ENV.fetch('FALCON_CID', nil)}',
           }
         MANIFEST
 
@@ -227,13 +227,13 @@ describe 'install falcon' do
         end
 
         describe 'proxy enabled' do
-          subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --apd') }
-
           subject(:facts) { command('puppet facts falcon') }
+
+          let(:falconctl) { command('/opt/CrowdStrike/falconctl -g --apd') }
 
           it 'is a fact' do
             expect(facts.exit_status).to eq 0
-            expect(JSON.parse(facts.stdout)['falcon']['proxy']['enabled']).to eq false
+            expect(JSON.parse(facts.stdout)['falcon']['proxy']['enabled']).to be false
           end
 
           it 'is set in falconctl' do
@@ -258,12 +258,12 @@ describe 'install falcon' do
 
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV.fetch('FALCON_CLIENT_ID', nil)}'),
+            client_secret => Sensitive('#{ENV.fetch('FALCON_CLIENT_SECRET', nil)}'),
             sensor_tmp_dir => '/tmp/stage',
             tags => ['tag1', 'tag2'],
             tag_membership => minimum,
-            cid => '#{ENV['FALCON_CID']}',
+            cid => '#{ENV.fetch('FALCON_CID', nil)}',
           }
         MANIFEST
 
@@ -273,9 +273,9 @@ describe 'install falcon' do
         end
 
         describe 'facts' do
-          subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --tags') }
-
           subject(:facts) { command('puppet facts falcon') }
+
+          let(:falconctl) { command('/opt/CrowdStrike/falconctl -g --tags') }
 
           it 'is a fact' do
             expect(facts.exit_status).to eq 0
@@ -302,12 +302,12 @@ describe 'install falcon' do
 
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV.fetch('FALCON_CLIENT_ID', nil)}'),
+            client_secret => Sensitive('#{ENV.fetch('FALCON_CLIENT_SECRET', nil)}'),
             tags => ['tag1', 'tag2'],
             sensor_tmp_dir => '/tmp/stage',
             tag_membership => inclusive,
-            cid => '#{ENV['FALCON_CID']}',
+            cid => '#{ENV.fetch('FALCON_CID', nil)}',
           }
         MANIFEST
 
@@ -322,9 +322,9 @@ describe 'install falcon' do
           end
 
           describe 'tags' do
-            subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --tags') }
-
             subject(:facts) { command('puppet facts falcon') }
+
+            let(:falconctl) { command('/opt/CrowdStrike/falconctl -g --tags') }
 
             it 'is a fact' do
               expect(facts.exit_status).to eq 0
@@ -351,14 +351,14 @@ describe 'install falcon' do
 
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            client_id => Sensitive('#{ENV.fetch('FALCON_CLIENT_ID', nil)}'),
+            client_secret => Sensitive('#{ENV.fetch('FALCON_CLIENT_SECRET', nil)}'),
             sensor_tmp_dir => '/tmp/stage',
             tags => [],
             tag_membership => inclusive,
-            cid => '#{ENV['FALCON_CID']}',
+            cid => '#{ENV.fetch('FALCON_CID', nil)}',
           }
-        MANIFEST
+          MANIFEST
 
           command('/opt/CrowdStrike/falconctl -sf --tags=ci,testing') do
             it 'applies idempotently' do
@@ -367,9 +367,9 @@ describe 'install falcon' do
             end
 
             describe 'tags' do
-              subject(:falconctl) { command('/opt/CrowdStrike/falconctl -g --tags') }
-
               subject(:facts) { command('puppet facts falcon') }
+
+              let(:falconctl) { command('/opt/CrowdStrike/falconctl -g --tags') }
 
               it 'is a fact' do
                 expect(facts.exit_status).to eq 0
@@ -400,13 +400,13 @@ describe 'install falcon' do
 
           class { 'falcon':
             falcon_cloud => 'api.us-2.crowdstrike.com',
-            cid => '#{ENV['FALCON_CID']}',
-            client_id => Sensitive('#{ENV['FALCON_CLIENT_ID']}'),
-            client_secret => Sensitive('#{ENV['FALCON_CLIENT_SECRET']}'),
+            cid => '#{ENV.fetch('FALCON_CID', nil)}',
+            client_id => Sensitive('#{ENV.fetch('FALCON_CLIENT_ID', nil)}'),
+            client_secret => Sensitive('#{ENV.fetch('FALCON_CLIENT_SECRET', nil)}'),
             sensor_tmp_dir => '/tmp/stage',
-            version => '#{ENV['LINUX_SENSOR_VERSION']}',
+            version => '#{ENV.fetch('LINUX_SENSOR_VERSION', nil)}',
           }
-          MANIFEST
+        MANIFEST
 
         it 'applies idempotently' do
           apply_manifest(manifest, { catch_failures: true, debug: true })

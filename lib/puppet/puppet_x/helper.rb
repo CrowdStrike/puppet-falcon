@@ -7,9 +7,7 @@ require 'cgi'
 def build_sensor_installer_query(platform_name:, os_name: nil, version: nil, os_version: nil, architecture: nil)
   query = "platform:'#{platform_name.downcase}'"
 
-  unless os_version.nil?
-    query += "+os_version:'#{os_version}'"
-  end
+  query += "+os_version:'#{os_version}'" unless os_version.nil?
 
   unless architecture.nil?
     query += case architecture
@@ -24,22 +22,16 @@ def build_sensor_installer_query(platform_name:, os_name: nil, version: nil, os_
              end
   end
 
-  unless version.nil?
-    query += "+version:'#{version}'"
-  end
+  query += "+version:'#{version}'" unless version.nil?
 
-  unless os_name.nil?
-    query += "+os:'#{os_name}'"
-  end
+  query += "+os:'#{os_name}'" unless os_name.nil?
 
   query
 end
 
 # Returns the platform name in the format expected by the falcon api
 def platform(scope)
-  if scope['facts']['os']['macosx']
-    return 'Mac'
-  end
+  return 'Mac' if scope['facts']['os']['macosx']
 
   scope['facts']['kernel'].capitalize
 end
@@ -48,42 +40,28 @@ end
 def os_version(scope, os_name)
   os_release_major = scope['facts']['os']['release']['major']
 
-  if os_name.casecmp('macOS').zero? || os_name.casecmp('windows').zero?
-    return nil
-  end
+  return nil if os_name.casecmp('macOS').zero? || os_name.casecmp('windows').zero?
 
-  if os_name.casecmp('Debian').zero?
-    return "*#{os_release_major}*"
-  end
+  return "*#{os_release_major}*" if os_name.casecmp('Debian').zero?
 
-  if os_name.casecmp('Ubuntu').zero?
-    return "*#{os_release_major.split('.')[0]}*"
-  end
+  return "*#{os_release_major.split('.')[0]}*" if os_name.casecmp('Ubuntu').zero?
 
   os_release_major
 end
 
 # Return the OS name in the format expected by the falcon api
 def os_name(scope, platform_name)
-  if platform_name.casecmp('mac').zero?
-    return 'macOS'
-  end
+  return 'macOS' if platform_name.casecmp('mac').zero?
 
-  if platform_name.casecmp('windows').zero?
-    return 'Windows'
-  end
+  return 'Windows' if platform_name.casecmp('windows').zero?
 
   fact_os_name = scope['facts']['os']['name']
 
-  if fact_os_name.casecmp('Amazon').zero?
-    return 'Amazon Linux'
-  end
+  return 'Amazon Linux' if fact_os_name.casecmp('Amazon').zero?
 
   rhel_base = ['RedHat', 'CentOS', 'OracleLinux', 'Scientific', 'Rocky', 'AlmaLinux']
 
-  if rhel_base.any? { |base| fact_os_name.casecmp(base).zero? }
-    return '*RHEL*'
-  end
+  return '*RHEL*' if rhel_base.any? { |base| fact_os_name.casecmp(base).zero? }
 
   fact_os_name
 end
