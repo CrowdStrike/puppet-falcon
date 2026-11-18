@@ -44,6 +44,6 @@ Puppet::Type.newtype(:sensor_download) do
       sensitive_parameters.delete(:bearer_token)
       parameter(:bearer_token).sensitive = true
     end
-    super(sensitive_parameters)
+    super
   end
 end

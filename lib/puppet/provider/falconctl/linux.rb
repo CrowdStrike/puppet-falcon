@@ -14,11 +14,12 @@ Puppet::Type.type(:falconctl).provide(:linux) do
     # We need to extract the cid from the string.
     begin
       current_cid = (falconctl_cmd '-g', '--cid').strip.gsub(%r{cid="|".}, '')
-    rescue => exception
-      Puppet.debug("Exception Class: #{exception.class.name}")
-      Puppet.debug("Exception Message: #{exception.message}")
+    rescue StandardError => e
+      Puppet.debug("Exception Class: #{e.class.name}")
+      Puppet.debug("Exception Message: #{e.message}")
 
-      raise exception unless %r{cid is not set}i.match?(exception.message)
+      raise e unless %r{cid is not set}i.match?(e.message)
+
       return nil
     end
 
@@ -28,9 +29,7 @@ Puppet::Type.type(:falconctl).provide(:linux) do
     Puppet.debug("Desired cid: #{desired}")
 
     # If they aren't equal, return the current value.
-    unless current_cid.casecmp?(desired)
-      return current_cid
-    end
+    return current_cid unless current_cid.casecmp?(desired)
 
     # If they are equal, return the original cid so Puppet thinks they are insync.
     @resource[:cid]
@@ -40,9 +39,7 @@ Puppet::Type.type(:falconctl).provide(:linux) do
     Puppet.notice("Setting cid to #{value}")
     cmd = ['-sf', "--cid=#{value}"]
 
-    if @resource[:provisioning_token] != :undef
-      cmd << "--provisioning-token=#{@resource[:provisioning_token]}"
-    end
+    cmd << "--provisioning-token=#{@resource[:provisioning_token]}" if @resource[:provisioning_token] != :undef
 
     falconctl_cmd(*cmd)
   end
@@ -50,11 +47,12 @@ Puppet::Type.type(:falconctl).provide(:linux) do
   def proxy_host
     begin
       current_proxy_host = (falconctl_cmd '-g', '--aph').strip.split('=')[-1].chomp('.')
-    rescue => exception
-      Puppet.debug("Exception Class: #{exception.class.name}")
-      Puppet.debug("Exception Message: #{exception.message}")
+    rescue StandardError => e
+      Puppet.debug("Exception Class: #{e.class.name}")
+      Puppet.debug("Exception Message: #{e.message}")
 
-      raise exception unless %r{aph is not set}i.match?(exception.message)
+      raise e unless %r{aph is not set}i.match?(e.message)
+
       return nil
     end
 
@@ -72,11 +70,12 @@ Puppet::Type.type(:falconctl).provide(:linux) do
   def proxy_port
     begin
       current_proxy_port = (falconctl_cmd '-g', '--app').strip.split('=')[-1].chomp('.')
-    rescue => exception
-      Puppet.debug("Exception Class: #{exception.class.name}")
-      Puppet.debug("Exception Message: #{exception.message}")
+    rescue StandardError => e
+      Puppet.debug("Exception Class: #{e.class.name}")
+      Puppet.debug("Exception Message: #{e.message}")
 
-      raise exception unless %r{app is not set}i.match?(exception.message)
+      raise e unless %r{app is not set}i.match?(e.message)
+
       return nil
     end
 
@@ -98,11 +97,12 @@ Puppet::Type.type(:falconctl).provide(:linux) do
       return current_proxy_enabled unless %r{true|false}i.match?(current_proxy_enabled)
 
       current_proxy_enabled = !to_boolean(current_proxy_enabled)
-    rescue => exception
-      Puppet.debug("Exception Class: #{exception.class.name}")
-      Puppet.debug("Exception Message: #{exception.message}")
+    rescue StandardError => e
+      Puppet.debug("Exception Class: #{e.class.name}")
+      Puppet.debug("Exception Message: #{e.message}")
 
-      raise exception unless %r{apd is not set}i.match?(exception.message)
+      raise e unless %r{apd is not set}i.match?(e.message)
+
       return nil
     end
 
@@ -128,9 +128,9 @@ Puppet::Type.type(:falconctl).provide(:linux) do
       current_tags = [] if %r{tags are not set}i.match?(current_tags)
 
       current_tags = current_tags.split(',') unless current_tags.is_a?(Array)
-    rescue => exception
-      Puppet.debug("Exception Class: #{exception.class.name}")
-      raise exception unless %r{tags are not set}i.match?(exception.message)
+    rescue StandardError => e
+      Puppet.debug("Exception Class: #{e.class.name}")
+      raise e unless %r{tags are not set}i.match?(e.message)
     end
 
     Puppet.debug("Using #{@resource[:tag_membership]} tag membership")
@@ -147,7 +147,11 @@ Puppet::Type.type(:falconctl).provide(:linux) do
 
   def tags=(value)
     begin
-      return falconctl_cmd '-df', '--tags' if value == [] && @resource[:tag_membership] == :inclusive
+      if value == [] && @resource[:tag_membership] == :inclusive
+        falconctl_cmd '-df', '--tags'
+        return
+      end
+
       tags = if @resource[:tag_membership] == :minimum
                current_tags = (falconctl_cmd '-g', '--tags').strip.split('=')[-1].chomp('.').to_s
                current_tags = [] if %r{tags are not set}i.match?(current_tags)
@@ -160,9 +164,10 @@ Puppet::Type.type(:falconctl).provide(:linux) do
       raise Puppet::Error, "Tags can not exceed 256 characters including comma delimiter. Current length: #{tags.length}" if tags.length > 256
 
       falconctl_cmd('-sf', "--tags=#{tags.join(',')}")
-    rescue => exception
-      Puppet.debug("Exception Class: #{exception.class.name}")
-      raise Puppet::Error, "Failed to set tags: #{exception.message}"
+    rescue StandardError => e
+      Puppet.debug("Exception Class: #{e.class.name}")
+      raise Puppet::Error, "Failed to set tags: #{e.message}"
     end
   end
 end
+# rubocop:enable Style/RedundantBegin

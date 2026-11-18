@@ -1,5 +1,5 @@
 # Helper function to generate install options for falcon on windows machines
-Puppet::Functions.create_function(:"falcon::win_install_options") do
+Puppet::Functions.create_function(:'falcon::win_install_options') do
   # @param options install options for falcon to be parsed
   # @return [Hash] transformed install options for falcon
   # @example Calling the function
@@ -16,10 +16,8 @@ Puppet::Functions.create_function(:"falcon::win_install_options") do
     # we use the inverse so if the user sets proxy_enabled to false, we set PROXYDISABLE to 1
     # if the user sets proxy_enabled to true, we remove the PROXYDISABLE key
     install_options = options.dup
-    if install_options.key?('PROXYDISABLE')
-      unless install_options['PROXYDISABLE'].nil?
-        install_options['PROXYDISABLE'] = install_options['PROXYDISABLE'] ? nil : 1
-      end
+    if install_options.key?('PROXYDISABLE') && !install_options['PROXYDISABLE'].nil?
+      install_options['PROXYDISABLE'] = install_options['PROXYDISABLE'] ? nil : 1
     end
 
     install_options.compact.map { |k, v| "#{k}=#{v}" }

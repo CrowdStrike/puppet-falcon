@@ -1,5 +1,4 @@
 .git/
-.env
 .*.sw[op]
 .metadata
 .yardoc
@@ -20,6 +19,7 @@
 /spec/fixtures/modules/*
 /tmp/
 /vendor/
+/.vendor/
 /convert_report.txt
 /update_report.txt
 .DS_Store
@@ -27,4 +27,9 @@
 .envrc
 /inventory.yaml
 /spec/fixtures/litmus_inventory.yaml
-setup_env.sh
+.resource_types
+.modules
+.task_cache.json
+.plan_cache.json
+.rerun.json
+bolt-debug.log

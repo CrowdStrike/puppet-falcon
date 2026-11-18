@@ -61,9 +61,7 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
       version_decrement = options['version_decrement']
       installers = falcon_api.falcon_installers(query)
 
-      if version_decrement >= installers.length
-        raise Puppet::Error, "The version_decrement is greater than the number of versions available for Platform: #{platform_name} and OS: #{os_name}"
-      end
+      raise Puppet::Error, "The version_decrement is greater than the number of versions available for Platform: #{platform_name} and OS: #{os_name}" if version_decrement >= installers.length
 
       installer = installers[version_decrement]
       version = installer['version']
@@ -84,7 +82,7 @@ Puppet::Functions.create_function(:'falcon::sensor_download_info') do
       'sha256' => installer['sha256'],
       'file_path' => file_path,
       'platform_name' => platform_name,
-      'os_name' => os_name
+      'os_name' => os_name,
     }
   end
 end
