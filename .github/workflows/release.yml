@@ -3,6 +3,10 @@ name: "Module Release"
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: read
+
 jobs:
   # Disabled: the org Actions policy only allows actions from enterprise-owned repositories.
   release:

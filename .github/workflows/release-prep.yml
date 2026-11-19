@@ -7,6 +7,10 @@ on:
         description: "Module version to be released. Must be a valid semver string. (1.2.3)"
         required: true
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   # Disabled: the org Actions policy only allows reusable workflows from enterprise-owned repositories.
   release_prep:
