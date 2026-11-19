@@ -10,5 +10,9 @@ Gemfile:
   optional:
     ':development':
       - gem: 'puppet-resource_api'
+    # Ruby 3.3 ships racc as a bundled gem, and puppet needs it to load.
+    ':release_prep':
+      - gem: 'racc'
+        condition: "Gem::Requirement.create(['>= 3.3.0']).satisfied_by?(Gem::Version.new(RUBY_VERSION.dup))"
 spec/spec_helper.rb:
   mock_with: ':rspec'

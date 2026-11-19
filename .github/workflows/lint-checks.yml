@@ -9,13 +9,31 @@ jobs:
   pdk_validate:
     name: "Run Puppet Linters"
     runs-on: ubuntu-latest
+    env:
+      BUNDLE_WITHOUT: system_tests:release_prep
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e  # v2.8.0
         with:
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
-      - name: "Run PDk Validate"
-        uses: docker://puppet/pdk:latest
+      - name: "Activate Ruby 3.3"
+        uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0  # v1.342.0
         with:
-          args: "validate"
+          ruby-version: "3.3"
+          bundler-cache: true
+      - name: "Validate metadata, puppet, and ruby files"
+        run: |
+          bundle exec rake metadata_lint syntax lint rubocop
+      - name: "Validate yaml files"
+        run: |
+          git ls-files -z -- '*.yml' '*.yaml' | xargs -0 ruby -ryaml -e '
+            valid = ARGV.map do |file|
+              YAML.safe_load_file(file, permitted_classes: [Symbol], aliases: true)
+              true
+            rescue Psych::Exception => e
+              puts "::error file=#{file}::#{e.message}"
+              false
+            end
+            exit(valid.all?)
+          '

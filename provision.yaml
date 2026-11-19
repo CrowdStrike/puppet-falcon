@@ -33,7 +33,6 @@ windows:
   images:
     - "StefanScherer/windows_10"
 
-# Puppet versions to test agaisnt
+# Puppet versions to test agaisnt. Puppet 7 is supported in metadata.json but not tested.
 collections:
-  - puppet7-nightly
   - puppet8-nightly

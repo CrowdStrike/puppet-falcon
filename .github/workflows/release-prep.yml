@@ -9,7 +9,8 @@ on:
 
 jobs:
   release_prep:
-    uses: "puppetlabs/cat-github-actions/.github/workflows/module_release_prep.yml@8e6480a83835a25866737b137447aaf0c3d25bf1"
+    uses: "puppetlabs/cat-github-actions/.github/workflows/module_release_prep.yml@080450d19d0822c5aabef29109cea62b4579866e"
     with:
       version: "${{ github.event.inputs.version }}"
+      ruby_version: "3.3"
     secrets: "inherit"
