@@ -5,16 +5,23 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
+  # Disabled: the org Actions policy only allows actions from enterprise-owned repositories.
   pdk_validate:
+    if: false
     name: "Run Puppet Linters"
     uses: ./.github/workflows/lint-checks.yml
 
   unit_tests:
+    if: false
     name: "Run Rspec tests"
     uses: ./.github/workflows/unit-test.yml
 
   acceptance_tests:
+    if: false
     name: "Run Acceptance Tests"
     uses: ./.github/workflows/acceptance-tests.yml
     secrets:

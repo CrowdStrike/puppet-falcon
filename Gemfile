@@ -48,6 +48,7 @@ end
 group :release_prep do
   gem "puppet-strings", '~> 4.0',         require: false
   gem "puppetlabs_spec_helper", '~> 6.0', require: false
+  gem "racc",                             require: false if Gem::Requirement.create(['>= 3.3.0']).satisfied_by?(Gem::Version.new(RUBY_VERSION.dup))
 end
 
 puppet_version = ENV['PUPPET_GEM_VERSION']
