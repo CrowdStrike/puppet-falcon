@@ -9,11 +9,17 @@ on:
         - 'manifests/**'
         - 'spec/**'
         - '.github/workflows/unit-test.yml'
+
+permissions:
+  contents: read
+
 jobs:
   # Runs the same checks as the spec job of puppetlabs/cat-github-actions module_ci.yml. That
   # workflow pins ruby/setup-ruby to an older release that lacks current Ruby 3.3 versions.
   # Puppet 7 remains supported in metadata.json but is not tested.
+  # Disabled: the org Actions policy only allows actions from enterprise-owned repositories.
   Spec:
+    if: false
     name: "Spec tests (Puppet: ${{matrix.puppet_version}}, Ruby Ver: ${{matrix.ruby_version}})"
     runs-on: ubuntu-latest
     strategy:

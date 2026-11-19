@@ -5,8 +5,13 @@ on:
   workflow_call:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
+  # Disabled: the org Actions policy only allows actions from enterprise-owned repositories.
   pdk_validate:
+    if: false
     name: "Run Puppet Linters"
     runs-on: ubuntu-latest
     env:
@@ -14,9 +19,6 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e  # v2.8.0
-        with:
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: "Activate Ruby 3.3"
         uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0  # v1.342.0
         with:

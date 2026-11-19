@@ -4,10 +4,11 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Disabled: the org Actions policy only allows actions from enterprise-owned repositories.
   release:
     name: "Release"
     runs-on: "ubuntu-latest"
-    if: github.repository_owner == 'CrowdStrike'
+    if: false && github.repository_owner == 'CrowdStrike'
 
     steps:
 
