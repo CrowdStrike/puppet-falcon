@@ -3,16 +3,21 @@ name: "Module Release"
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: read
+
 jobs:
+  # Disabled: the org Actions policy only allows actions from enterprise-owned repositories.
   release:
     name: "Release"
     runs-on: "ubuntu-latest"
-    if: github.repository_owner == 'CrowdStrike'
+    if: false && github.repository_owner == 'CrowdStrike'
 
     steps:
 
       - name: "Checkout"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"  # v4.4.0
         with:
           ref: "${{ github.ref }}"
           clean: true
@@ -23,10 +28,19 @@ jobs:
         run: |
           echo "version=$(jq --raw-output .version metadata.json)" >> $GITHUB_OUTPUT
 
-      - name: "PDK build"
-        uses: "docker://puppet/pdk:3.0.0.0"
+      - name: "Activate Ruby 3.3"
+        uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0  # v1.342.0
         with:
-          args: "build"
+          ruby-version: "3.3"
+
+      # The puppet/pdk images bundle Ruby 3.2 and 2.7, so PDK is installed as a gem on Ruby 3.3.
+      - name: "Install PDK"
+        run: |
+          gem install pdk --version 3.4.0 --no-document
+
+      - name: "PDK build"
+        run: |
+          pdk build
 
       - name: "Generate release notes"
         run: |
@@ -43,6 +57,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Publish module"
-        uses: "docker://puppet/pdk:3.0.0.0"
-        with:
-          args: 'release publish --forge-token ${{ secrets.FORGE_API_KEY }} --force'
+        run: |
+          pdk release publish --force
+        env:
+          PDK_FORGE_TOKEN: ${{ secrets.FORGE_API_KEY }}

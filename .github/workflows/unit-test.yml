@@ -9,7 +9,45 @@ on:
         - 'manifests/**'
         - 'spec/**'
         - '.github/workflows/unit-test.yml'
+
+permissions:
+  contents: read
+
 jobs:
+  # Runs the same checks as the spec job of puppetlabs/cat-github-actions module_ci.yml. That
+  # workflow pins ruby/setup-ruby to an older release that lacks current Ruby 3.3 versions.
+  # Puppet 7 remains supported in metadata.json but is not tested.
+  # Disabled: the org Actions policy only allows actions from enterprise-owned repositories.
   Spec:
-    uses: "puppetlabs/cat-github-actions/.github/workflows/module_ci.yml@a18620f889f9b80be693ceb62fed9067de370c94"
-    secrets: "inherit"
+    if: false
+    name: "Spec tests (Puppet: ${{matrix.puppet_version}}, Ruby Ver: ${{matrix.ruby_version}})"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - puppet_version: "~> 8.0"
+            ruby_version: "3.3"
+    env:
+      BUNDLE_WITHOUT: release_prep
+      PUPPET_GEM_VERSION: ${{ matrix.puppet_version }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: "Activate Ruby ${{ matrix.ruby_version }}"
+        uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0  # v1.342.0
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler-cache: true
+      - name: "Bundle environment"
+        run: |
+          bundle env
+      - name: "Run Static & Syntax Tests"
+        run: |
+          bundle exec rake syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop
+          bundle exec dependency-checker metadata.json
+      - name: "Run tests"
+        run: |
+          bundle exec rake parallel_spec
